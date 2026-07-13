@@ -16,7 +16,7 @@ function Card({
 }) {
   return (
     <article className="w-[340px] shrink-0 rounded-3xl border border-white/10 bg-white/[0.05] p-7 backdrop-blur-xl md:w-[420px]">
-      <p className="text-lg leading-relaxed text-white/90">&ldquo;{quote}&rdquo;</p>
+      <p className="text-lg leading-relaxed text-foreground/90">&ldquo;{quote}&rdquo;</p>
       <div className="mt-8 border-t border-white/10 pt-5">
         <p className="font-heading font-medium">{name}</p>
         <p className="text-sm text-muted">
@@ -46,8 +46,8 @@ export function Testimonials() {
             <Card key={`${item.name}-${i}`} {...item} />
           ))}
         </div>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#050505]" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#050505]" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background" />
       </div>
     </section>
   );

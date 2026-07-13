@@ -1,0 +1,94 @@
+[
+  {
+    "id": "1",
+    "slug": "zero-trust-network-architecture",
+    "title": {
+      "tr": "Zero-Trust Ağ Mimarisi Tasarlamak",
+      "en": "Designing Zero-Trust Network Architecture"
+    },
+    "excerpt": {
+      "tr": "Erişimi nasıl segmentlere ayırır, kimliği sürekli doğrular ve hibrit altyapıda etki yarıçapını küçültürsünüz.",
+      "en": "How to segment access, continuously verify identity, and shrink blast radius across hybrid infrastructure."
+    },
+    "content": {
+      "tr": "Zero-trust bir ürün değil — bir işletim modelidir. Kimlik, mikro-segmentasyon ve sürekli doğrulama ile başlayın. Güvenlik duvarı politikasını cihaz duruşu, en az yetki ve gözlemlenebilirlikle birleştirin. Pratikte bu; net güven sınırları, kısa ömürlü kimlik bilgileri ve izlenen doğu-batı trafiği demektir.",
+      "en": "Zero-trust is not a product — it is an operating model. Start with identity, micro-segmentation, and continuous verification. Combine firewall policy with device posture, least privilege, and observability. In practice that means clear trust boundaries, short-lived credentials, and monitored east-west traffic."
+    },
+    "category": "Cyber Security",
+    "date": "2025-11-12",
+    "readTime": { "tr": "7 dk", "en": "7 min" },
+    "image": "/images/blog/security.jpg",
+    "published": true,
+    "createdAt": "2025-11-12T10:00:00.000Z",
+    "updatedAt": "2025-11-12T10:00:00.000Z"
+  },
+  {
+    "id": "2",
+    "slug": "proxmox-vs-vmware-2025",
+    "title": {
+      "tr": "2025’te Proxmox vs VMware",
+      "en": "Proxmox vs VMware in 2025"
+    },
+    "excerpt": {
+      "tr": "Maliyet, kümeleme ve operasyonel olgunluk açısından kurumlar için pratik bir karşılaştırma.",
+      "en": "A practical comparison for enterprises across cost, clustering, and operational maturity."
+    },
+    "content": {
+      "tr": "Her iki platform da kritik iş yüklerini çalıştırabilir. Karar genellikle lisanslama, araç aşinalığı ve depolama stratejisine bağlıdır. Proxmox açık ekosistemler ve ZFS dostu tasarımlarda öne çıkar; VMware kurumsal araç olgunluğunda güçlü kalır.",
+      "en": "Both platforms can run critical workloads. The decision usually hinges on licensing, tooling familiarity, and storage strategy. Proxmox shines in open ecosystems and ZFS-friendly designs; VMware remains strong in enterprise tooling maturity."
+    },
+    "category": "Technology",
+    "date": "2025-10-03",
+    "readTime": { "tr": "6 dk", "en": "6 min" },
+    "image": "/images/blog/virtualization.jpg",
+    "published": true,
+    "createdAt": "2025-10-03T10:00:00.000Z",
+    "updatedAt": "2025-10-03T10:00:00.000Z"
+  },
+  {
+    "id": "3",
+    "slug": "fiber-backbone-best-practices",
+    "title": {
+      "tr": "Büyüyen ISS’ler için Fiber Omurga İyi Uygulamaları",
+      "en": "Fiber Backbone Best Practices for Growing ISPs"
+    },
+    "excerpt": {
+      "tr": "Ağları ölçekte sürdürülebilir tutan rota planlama, yedeklilik ve dokümantasyon kalıpları.",
+      "en": "Route planning, redundancy, and documentation patterns that keep networks sustainable at scale."
+    },
+    "content": {
+      "tr": "Temiz bir fiber omurga, optik kadar dokümantasyonla da ilgilidir. Çeşitli yollar planlayın, etiketlemeyi standartlaştırın, OTDR ile doğrulayın ve as-built haritaları güncel tutun. Operasyonel mükemmellik ilk splice’dan önce başlar.",
+      "en": "A clean fiber backbone is as much about documentation as optics. Plan diverse paths, standardize labeling, validate with OTDR, and keep as-built maps current. Operational excellence starts before the first splice."
+    },
+    "category": "Networking",
+    "date": "2025-09-18",
+    "readTime": { "tr": "8 dk", "en": "8 min" },
+    "image": "/images/blog/fiber.jpg",
+    "published": true,
+    "createdAt": "2025-09-18T10:00:00.000Z",
+    "updatedAt": "2025-09-18T10:00:00.000Z"
+  },
+  {
+    "id": "4",
+    "slug": "ai-ops-automation-playbook",
+    "title": {
+      "tr": "YZ Ops Otomasyon Oyun Kitabı",
+      "en": "AI Ops Automation Playbook"
+    },
+    "excerpt": {
+      "tr": "YZ API’leri, n8n ve insan denetimli inceleme ile güvenilir otomasyon kurmak.",
+      "en": "Building reliable automation with AI APIs, n8n, and human-in-the-loop review."
+    },
+    "content": {
+      "tr": "Faydalı YZ otomasyonu bilerek sıkıcıdır: net tetikleyiciler, deterministik araçlar ve denetim logları. Modelleri sınıflandırma ve taslak için kullanın, geri alınamaz eylemleri onay arkasına koyun ve gösteriş yerine MTTR düşüşünü ölçün.",
+      "en": "Useful AI automation is intentionally boring: clear triggers, deterministic tools, and audit logs. Use models for classification and drafting, put irreversible actions behind approval, and measure MTTR reduction over spectacle."
+    },
+    "category": "Artificial Intelligence",
+    "date": "2025-08-22",
+    "readTime": { "tr": "9 dk", "en": "9 min" },
+    "image": "/images/blog/aiops.jpg",
+    "published": true,
+    "createdAt": "2025-08-22T10:00:00.000Z",
+    "updatedAt": "2025-08-22T10:00:00.000Z"
+  }
+]

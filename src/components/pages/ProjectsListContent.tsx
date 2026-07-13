@@ -37,7 +37,7 @@ export function ProjectsListContent() {
                       className="object-cover transition duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
                   </div>
                   <div className="p-6 md:p-8">
                     <p className="text-xs uppercase tracking-[0.2em] text-accent">

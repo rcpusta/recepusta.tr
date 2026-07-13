@@ -3,17 +3,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { blogMeta } from "@/data/content";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import { RichContent } from "@/components/ui/RichContent";
+import { MediaEmbed } from "@/components/ui/MediaEmbed";
+import type { BlogPostRecord } from "@/types/content";
 
-export function BlogPostDetailContent({ slug }: { slug: string }) {
-  const { t } = useLanguage();
-  const index = t.blog.items.findIndex((p) => p.slug === slug);
-  if (index < 0) {
-    return null;
-  }
-  const post = t.blog.items[index];
-  const meta = blogMeta[index];
+function pick(value: { tr: string; en: string }, locale: "tr" | "en") {
+  return value[locale] || value.tr || value.en;
+}
+
+export function BlogPostDetailContent({ post }: { post: BlogPostRecord }) {
+  const { t, locale } = useLanguage();
+  const title = pick(post.title, locale);
+  const content = pick(post.content, locale);
+  const readTime = pick(post.readTime, locale);
   const categoryLabel =
     t.blog.categories[post.category as keyof typeof t.blog.categories] ?? post.category;
 
@@ -28,24 +31,30 @@ export function BlogPostDetailContent({ slug }: { slug: string }) {
             <ArrowLeft size={16} /> {t.common.allArticles}
           </Link>
           <p className="text-xs uppercase tracking-[0.3em] text-accent">{categoryLabel}</p>
-          <h1 className="mt-4 heading-lg">{post.title}</h1>
+          <h1 className="mt-4 heading-lg">{title}</h1>
           <div className="mt-4 flex gap-3 text-sm text-muted">
-            <time dateTime={meta.date}>{meta.date}</time>
+            <time dateTime={post.date}>{post.date}</time>
             <span>·</span>
-            <span>{post.readTime}</span>
+            <span>{readTime}</span>
           </div>
           <div className="relative mt-10 aspect-[16/9] overflow-hidden rounded-[2rem]">
             <Image
-              src={meta.image}
-              alt={post.title}
+              src={post.image}
+              alt={title}
               fill
               className="object-cover"
               priority
               sizes="100vw"
+              unoptimized={post.image.startsWith("/uploads/")}
             />
           </div>
-          <div className="mt-10 space-y-6 text-lg leading-relaxed text-white/85">
-            <p>{post.content}</p>
+          {post.videoUrl ? (
+            <div className="mt-8">
+              <MediaEmbed url={post.videoUrl} title={title} />
+            </div>
+          ) : null}
+          <div className="mt-10">
+            <RichContent html={content} />
           </div>
         </div>
       </div>

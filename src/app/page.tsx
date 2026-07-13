@@ -10,8 +10,13 @@ import { Testimonials } from "@/components/sections/Testimonials";
 import { BlogPreview } from "@/components/sections/BlogPreview";
 import { Contact } from "@/components/sections/Contact";
 import { LatestTechWidget } from "@/components/sections/LatestTechWidget";
+import { getAllBlogPosts } from "@/lib/content-store";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const posts = await getAllBlogPosts(false);
+
   return (
     <>
       <Hero />
@@ -23,7 +28,7 @@ export default function HomePage() {
       <Process />
       <WhyChooseMe />
       <Testimonials />
-      <BlogPreview />
+      <BlogPreview posts={posts} />
       <LatestTechWidget />
       <Contact />
     </>

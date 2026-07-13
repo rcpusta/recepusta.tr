@@ -2,6 +2,7 @@
 
 import { GitHubActivity } from "@/components/widgets/GitHubActivity";
 import { techStack } from "@/data/content";
+import { techIcons } from "@/data/techIcons";
 import { Reveal } from "@/components/ui/Reveal";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Sparkles } from "lucide-react";
@@ -24,14 +25,18 @@ export function LatestTechWidget() {
               <h3 className="font-heading text-lg font-medium">{t.widgets.latestTech}</h3>
             </div>
             <div className="flex flex-wrap gap-2">
-              {latest.map((item) => (
-                <span
-                  key={item.name}
-                  className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-muted"
-                >
-                  {item.name}
-                </span>
-              ))}
+              {latest.map((item) => {
+                const Icon = techIcons[item.name];
+                return (
+                  <span
+                    key={item.name}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-muted"
+                  >
+                    {Icon ? <Icon className="size-3.5 text-foreground/65" aria-hidden /> : null}
+                    {item.name}
+                  </span>
+                );
+              })}
             </div>
             <p className="mt-5 text-sm text-muted">{t.widgets.latestTechDesc}</p>
           </GlassCard>

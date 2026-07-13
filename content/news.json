@@ -1,0 +1,44 @@
+[
+  {
+    "id": "n1",
+    "slug": "yeni-guvenlik-danismanligi",
+    "title": {
+      "tr": "Kurumsal güvenlik danışmanlığı hizmeti başladı",
+      "en": "Enterprise security advisory service is live"
+    },
+    "excerpt": {
+      "tr": "Ağ kenarından uygulama katmanına güvenlik değerlendirmesi ve iyileştirme paketleri sunuluyor.",
+      "en": "Security assessment and hardening packages now cover the edge through the application layer."
+    },
+    "content": {
+      "tr": "Kurumsal müşteriler için güvenlik değerlendirmesi, firewall politika gözden geçirme ve zero-trust yol haritası danışmanlığı aktif. Kısa keşif sonrası net bir iyileştirme planı ve uygulama takvimi çıkarılıyor.",
+      "en": "Security assessments, firewall policy reviews, and zero-trust roadmap advisory are now available for enterprise clients. After a short discovery, you receive a clear remediation plan and delivery timeline."
+    },
+    "date": "2026-06-20",
+    "image": "/images/blog/security.jpg",
+    "published": true,
+    "createdAt": "2026-06-20T10:00:00.000Z",
+    "updatedAt": "2026-06-20T10:00:00.000Z"
+  },
+  {
+    "id": "n2",
+    "slug": "proxmox-egitim-serisi",
+    "title": {
+      "tr": "Proxmox eğitim serisi yayında",
+      "en": "Proxmox training series is online"
+    },
+    "excerpt": {
+      "tr": "Küme kurulumu, yedekleme ve izleme odaklı uygulamalı video serisi Blog & Eğitim’de.",
+      "en": "A hands-on video series on clustering, backup, and monitoring is now in Blog & Media."
+    },
+    "content": {
+      "tr": "Yeni Proxmox eğitim serisi; küme tasarımı, ZFS yedekleme ve gözlemlenebilirlik konularını adım adım anlatıyor. Videolar Blog & Eğitim sayfasından izlenebilir.",
+      "en": "The new Proxmox series walks through cluster design, ZFS backups, and observability step by step. Watch the videos on the Blog & Media page."
+    },
+    "date": "2026-05-08",
+    "image": "/images/blog/virtualization.jpg",
+    "published": true,
+    "createdAt": "2026-05-08T10:00:00.000Z",
+    "updatedAt": "2026-05-08T10:00:00.000Z"
+  }
+]

@@ -21,7 +21,7 @@ export function Process() {
             {t.process.steps.map((step, i) => (
               <Reveal key={step.id} delay={0.1 * i} className="relative">
                 <div className="mb-6 flex items-center gap-3">
-                  <span className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-[#050505] font-heading text-lg text-accent shadow-glow-accent">
+                  <span className="relative z-10 flex h-16 w-16 items-center justify-center rounded-full border border-white/15 bg-background font-heading text-lg text-accent shadow-glow-accent">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                 </div>

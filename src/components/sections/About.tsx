@@ -30,10 +30,10 @@ export function About() {
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 priority={false}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
-                <p className="font-heading text-2xl font-semibold">Recep Usta</p>
-                <p className="text-sm text-muted">{t.about.role}</p>
+                <p className="font-heading text-2xl font-semibold text-white">Recep Usta</p>
+                <p className="text-sm text-white/70">{t.about.role}</p>
               </div>
             </div>
           </Reveal>

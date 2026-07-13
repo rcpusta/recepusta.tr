@@ -29,14 +29,14 @@ export function Hero() {
       ) : (
         <NetworkSphere />
       )}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#050505]/30 via-transparent to-[#050505]" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-background/30 via-transparent to-background" />
 
       <div className="relative z-10 mx-auto w-full max-w-7xl px-6 md:px-10 lg:px-16">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.5, duration: 0.7 }}
-          className="mb-6 text-xs uppercase tracking-[0.4em] text-accent"
+          className="mb-6 font-terminal text-xs tracking-wide text-accent md:text-sm"
         >
           {t.hero.eyebrow}
         </motion.p>
@@ -46,10 +46,10 @@ export function Hero() {
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.65, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-          className="heading-xl max-w-5xl"
+          className="max-w-4xl font-terminal text-3xl font-medium leading-[1.25] tracking-normal text-foreground antialiased sm:text-4xl md:text-5xl lg:text-[3.25rem]"
         >
           {t.hero.titleBefore}{" "}
-          <span className="gradient-text">{t.hero.titleAccent}</span>
+          <span className="gradient-text">{t.hero.titleAccent}</span>{" "}
           {t.hero.titleAfter}
         </motion.h1>
 
@@ -57,7 +57,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.85, duration: 0.7 }}
-          className="mt-8 h-8 font-heading text-xl md:text-2xl text-muted"
+          className="mt-8 h-8 font-terminal text-lg text-accent md:text-xl"
         >
           <TypingText key={locale} phrases={[...t.hero.phrases]} />
         </motion.div>

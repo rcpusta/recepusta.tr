@@ -1,0 +1,11 @@
+import { NextResponse } from "next/server";
+import { isAdminAuthenticated } from "@/lib/admin-auth";
+import { getAllTickets } from "@/lib/ticket-store";
+
+export async function GET() {
+  if (!(await isAdminAuthenticated())) {
+    return NextResponse.json({ error: "Yetkisiz" }, { status: 401 });
+  }
+  const items = await getAllTickets();
+  return NextResponse.json({ items });
+}

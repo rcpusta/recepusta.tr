@@ -12,7 +12,12 @@ type Props = {
   size?: "sm" | "md" | "lg";
   className?: string;
   type?: "button" | "submit";
+  external?: boolean;
 };
+
+function isExternalHref(href: string) {
+  return /^(https?:|mailto:|tel:|wa\.me)/i.test(href) || href.startsWith("//");
+}
 
 export function MagneticButton({
   children,
@@ -22,6 +27,7 @@ export function MagneticButton({
   size = "md",
   className,
   type = "button",
+  external,
 }: Props) {
   const { ref, onMouseMove, onMouseLeave } = useMagnetic(0.35);
 
@@ -33,12 +39,31 @@ export function MagneticButton({
     variant === "primary" &&
       "bg-gradient-to-r from-primary to-secondary text-white shadow-glow hover:shadow-glow-accent",
     variant === "secondary" &&
-      "glass text-white hover:border-accent/40 hover:bg-white/[0.08]",
-    variant === "ghost" && "text-muted hover:text-white",
+      "glass text-foreground hover:border-accent/40",
+    variant === "ghost" && "text-muted hover:text-foreground",
     className
   );
 
   if (href) {
+    const useAnchor = external ?? isExternalHref(href);
+
+    if (useAnchor) {
+      return (
+        <a
+          href={href}
+          ref={ref as React.RefObject<HTMLAnchorElement>}
+          onClick={onClick}
+          onMouseMove={onMouseMove}
+          onMouseLeave={onMouseLeave}
+          className={styles}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {children}
+        </a>
+      );
+    }
+
     return (
       <Link
         href={href}

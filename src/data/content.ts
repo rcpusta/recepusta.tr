@@ -219,7 +219,7 @@ export const images = {
   portrait: "/images/about/portrait.jpg",
   aboutHero: "/images/about/hero.jpg",
   whyChoose: "/images/about/why-choose.jpg",
-  logo: "/images/brand/logo.png",
+  logo: "/images/brand/logo.png?v=4",
 } as const;
 
 export const navHrefs = [
@@ -228,5 +228,6 @@ export const navHrefs = [
   { href: "/services", key: "services" as const },
   { href: "/projects", key: "projects" as const },
   { href: "/blog", key: "media" as const },
+  { href: "/haberler", key: "news" as const },
   { href: "/contact", key: "contact" as const },
 ];

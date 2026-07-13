@@ -8,8 +8,8 @@ export function CustomCursor() {
   const [hovering, setHovering] = useState(false);
   const x = useMotionValue(-100);
   const y = useMotionValue(-100);
-  const sx = useSpring(x, { stiffness: 400, damping: 35 });
-  const sy = useSpring(y, { stiffness: 400, damping: 35 });
+  const sx = useSpring(x, { stiffness: 500, damping: 35, mass: 0.2 });
+  const sy = useSpring(y, { stiffness: 500, damping: 35, mass: 0.2 });
 
   useEffect(() => {
     const fine = window.matchMedia("(pointer: fine)").matches;
@@ -38,22 +38,33 @@ export function CustomCursor() {
   if (!visible) return null;
 
   return (
-    <>
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[90] hidden mix-blend-difference md:block"
-        style={{ x: sx, y: sy, translateX: "-50%", translateY: "-50%" }}
+    <motion.div
+      className="pointer-events-none fixed left-0 top-0 z-[90] hidden md:block"
+      style={{ x: sx, y: sy }}
+      animate={{ scale: hovering ? 1.15 : 1 }}
+      transition={{ duration: 0.2 }}
+    >
+      <svg
+        width="28"
+        height="28"
+        viewBox="0 0 24 24"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="overflow-visible"
+        style={{
+          filter: hovering
+            ? "drop-shadow(0 0 6px rgba(34,211,238,0.95)) drop-shadow(0 0 14px rgba(34,211,238,0.55))"
+            : "drop-shadow(0 0 4px rgba(34,211,238,0.85)) drop-shadow(0 0 10px rgba(34,211,238,0.4))",
+        }}
       >
-        <div
-          className={`rounded-full border border-white transition-all duration-300 ${
-            hovering ? "h-14 w-14 bg-white/20" : "h-3 w-3 bg-white"
-          }`}
+        <path
+          d="M5.5 3.2L5.5 18.8L10.1 14.4L13.6 21.8L16.2 20.6L12.6 13.1L18.5 12.8L5.5 3.2Z"
+          fill="#ecfeff"
+          stroke="#22d3ee"
+          strokeWidth="1.2"
+          strokeLinejoin="round"
         />
-      </motion.div>
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[89] hidden h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-accent/40 md:block"
-        style={{ x: sx, y: sy }}
-        animate={{ scale: hovering ? 1.4 : 1, opacity: hovering ? 0.4 : 0.7 }}
-      />
-    </>
+      </svg>
+    </motion.div>
   );
 }

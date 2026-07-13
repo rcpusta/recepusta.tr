@@ -1,11 +1,12 @@
 "use client";
 
+import { useTheme } from "@/components/theme/ThemeProvider";
 import { useMemo, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Sphere } from "@react-three/drei";
 import * as THREE from "three";
 
-function NetworkPoints() {
+function NetworkPoints({ light }: { light: boolean }) {
   const points = useRef<THREE.Points>(null);
   const lines = useRef<THREE.LineSegments>(null);
 
@@ -57,23 +58,33 @@ function NetworkPoints() {
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[positions, 3]} />
         </bufferGeometry>
-        <pointsMaterial size={0.04} color="#00E5FF" transparent opacity={0.9} sizeAttenuation />
+        <pointsMaterial
+          size={light ? 0.05 : 0.04}
+          color={light ? "#3d5a80" : "#00E5FF"}
+          transparent
+          opacity={light ? 0.9 : 0.9}
+          sizeAttenuation
+        />
       </points>
       <lineSegments ref={lines}>
         <bufferGeometry>
           <bufferAttribute attach="attributes-position" args={[linePositions, 3]} />
         </bufferGeometry>
-        <lineBasicMaterial color="#3B82F6" transparent opacity={0.28} />
+        <lineBasicMaterial
+          color={light ? "#3b6ea8" : "#3B82F6"}
+          transparent
+          opacity={light ? 0.4 : 0.28}
+        />
       </lineSegments>
       <Float speed={1.2} rotationIntensity={0.4} floatIntensity={0.6}>
         <Sphere args={[1.55, 48, 48]}>
           <meshStandardMaterial
-            color="#3B82F6"
+            color={light ? "#3b6ea8" : "#3B82F6"}
             wireframe
             transparent
-            opacity={0.12}
-            emissive="#8B5CF6"
-            emissiveIntensity={0.2}
+            opacity={light ? 0.2 : 0.12}
+            emissive={light ? "#5b6bc7" : "#8B5CF6"}
+            emissiveIntensity={light ? 0.25 : 0.2}
           />
         </Sphere>
       </Float>
@@ -82,17 +93,20 @@ function NetworkPoints() {
 }
 
 export function NetworkSphere() {
+  const { theme } = useTheme();
+  const light = theme === "light";
+
   return (
-    <div className="absolute inset-0 -z-0 opacity-80">
+    <div className={`network-sphere absolute inset-0 -z-0 ${light ? "opacity-95" : "opacity-80"}`}>
       <Canvas
         camera={{ position: [0, 0, 6.5], fov: 45 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true }}
       >
-        <ambientLight intensity={0.4} />
-        <pointLight position={[4, 4, 4]} intensity={1.2} color="#00E5FF" />
-        <pointLight position={[-4, -2, -2]} intensity={0.8} color="#8B5CF6" />
-        <NetworkPoints />
+        <ambientLight intensity={light ? 0.65 : 0.4} />
+        <pointLight position={[4, 4, 4]} intensity={light ? 1.2 : 1.2} color={light ? "#3b6ea8" : "#00E5FF"} />
+        <pointLight position={[-4, -2, -2]} intensity={light ? 0.85 : 0.8} color={light ? "#5b6bc7" : "#8B5CF6"} />
+        <NetworkPoints light={light} />
       </Canvas>
     </div>
   );

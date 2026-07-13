@@ -74,7 +74,7 @@ export function Footer() {
             <p>
               {t.footer.designedByBefore}
               <a
-                href="https://codexsoft.com"
+                href="https://www.codexfix.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-accent transition hover:text-white"

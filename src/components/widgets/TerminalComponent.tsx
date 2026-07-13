@@ -19,7 +19,7 @@ export function TerminalComponent() {
         <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
         <span className="ml-2 text-xs text-muted">infra — zsh</span>
       </div>
-      <div className="space-y-2 p-4 text-accent/90">
+      <div className="space-y-2 p-4 font-terminal text-emerald-400">
         {lines.map((line, i) => (
           <motion.p
             key={line}

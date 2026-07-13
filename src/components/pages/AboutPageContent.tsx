@@ -29,7 +29,7 @@ export function AboutPageContent() {
               priority
               sizes="100vw"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#050505] via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           </div>
         </div>
       </section>
