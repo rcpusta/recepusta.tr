@@ -41,7 +41,7 @@ export function BlogPageContent({ posts }: { posts: BlogPostRecord[] }) {
           <p className="mb-4 text-xs uppercase tracking-[0.35em] text-accent">{t.blog.eyebrow}</p>
           <h1 className="heading-lg max-w-4xl">
             {t.blog.pageTitleBefore}{" "}
-            <span className="gradient-text">{t.blog.pageTitleAccent}</span>
+            <span className="gradient-text">{t.blog.pageTitleAccent}</span>{" "}
             {t.blog.pageTitleAfter}
           </h1>
           <p className="mt-5 max-w-2xl body-muted">{t.blog.description}</p>

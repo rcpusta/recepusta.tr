@@ -32,6 +32,9 @@ yarn-error.log*
 .env*
 !.env.example
 
+# admin password hash (runtime override)
+/content/admin-auth.json
+
 # vercel
 .vercel
 

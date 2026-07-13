@@ -30,7 +30,7 @@ function ProjectCard({
     description: string;
     category: string;
   };
-  meta: { image: string; year: string; technologies: string[] };
+  meta: { image: string; year: string; technologies: readonly string[] };
   index: number;
   caseLabel: string;
   progress: MotionValue<number>;
@@ -242,7 +242,7 @@ export function FeaturedProjects() {
             )}
           >
             {t.projects.items.map((project, i) => {
-              const meta = projectMeta[i];
+              const meta = projectMeta.find((m) => m.slug === project.slug);
               if (!meta) return null;
               return (
                 <ProjectCard

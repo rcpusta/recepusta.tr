@@ -3,10 +3,6 @@ import { cookies } from "next/headers";
 export const ADMIN_COOKIE = "ru_admin_session";
 const SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 7; // 7 days
 
-function getPassword() {
-  return process.env.ADMIN_PASSWORD || "recepusta2026";
-}
-
 function getSecret() {
   return process.env.ADMIN_SESSION_SECRET || "recep-usta-admin-dev-secret-change-me";
 }
@@ -41,10 +37,6 @@ async function sign(payload: string) {
   const key = await getHmacKey();
   const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(payload));
   return toBase64Url(signature);
-}
-
-export function verifyAdminPassword(password: string) {
-  return timingSafeEqualString(password, getPassword());
 }
 
 export async function createSessionToken() {

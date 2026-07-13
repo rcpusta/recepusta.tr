@@ -4,10 +4,12 @@ import type { Locale } from "@/i18n/config";
 
 export function getLocalizedProjects(locale: Locale = "tr") {
   const t = getDictionary(locale);
-  return t.projects.items.map((item, i) => ({
-    ...item,
-    ...projectMeta[i],
-  }));
+  return t.projects.items
+    .map((item) => {
+      const meta = projectMeta.find((m) => m.slug === item.slug);
+      return meta ? { ...item, ...meta } : null;
+    })
+    .filter((p): p is NonNullable<typeof p> => Boolean(p));
 }
 
 export function getLocalizedPosts(locale: Locale = "tr") {

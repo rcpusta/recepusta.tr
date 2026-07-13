@@ -20,8 +20,9 @@ export function CaseStudiesPageContent() {
           </h1>
 
           <div className="space-y-8">
-            {t.projects.items.map((project, i) => {
-              const meta = projectMeta[i];
+            {t.projects.items.map((project) => {
+              const meta = projectMeta.find((m) => m.slug === project.slug);
+              if (!meta) return null;
               return (
                 <Link
                   key={project.slug}

@@ -10,13 +10,16 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Logo } from "@/components/ui/Logo";
 import { useLanguage } from "@/i18n/LanguageProvider";
-import { cn, SITE } from "@/lib/utils";
+import { useSiteSettings } from "@/components/site/SiteSettingsProvider";
+import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { t } = useLanguage();
+  const { settings } = useSiteSettings();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const talkHref = settings.whatsappMessage || settings.whatsapp;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -94,7 +97,7 @@ export function Navbar() {
             <ThemeToggle />
             <LanguageSwitcher />
             <a
-              href={SITE.whatsappMessage}
+              href={talkHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center rounded-full border border-[var(--accent)]/35 bg-gradient-to-b from-[var(--accent)]/12 to-[var(--accent)]/4 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--nav-fg)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:border-[var(--accent)]/55 2xl:px-5 2xl:text-[11px]"
@@ -152,7 +155,7 @@ export function Navbar() {
                 </motion.div>
               ))}
               <motion.a
-                href={SITE.whatsappMessage}
+                href={talkHref}
                 target="_blank"
                 rel="noopener noreferrer"
                 initial={{ y: 20, opacity: 0 }}

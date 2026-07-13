@@ -3,12 +3,13 @@
 import { FormEvent, useState } from "react";
 import dynamic from "next/dynamic";
 import { Mail, MessageCircle, Phone } from "lucide-react";
-import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { FaGithub, FaInstagram, FaLinkedin, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 import { SectionHeading, Reveal } from "@/components/ui/Reveal";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { SITE } from "@/lib/utils";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import { useSiteSettings } from "@/components/site/SiteSettingsProvider";
 
 const InteractiveGlobe = dynamic(
   () => import("@/components/three/InteractiveGlobe").then((m) => m.InteractiveGlobe),
@@ -17,6 +18,7 @@ const InteractiveGlobe = dynamic(
 
 export function Contact() {
   const { t } = useLanguage();
+  const { settings } = useSiteSettings();
   const [sent, setSent] = useState(false);
 
   const onSubmit = (e: FormEvent) => {
@@ -25,12 +27,76 @@ export function Contact() {
   };
 
   const contacts = [
-    { icon: Mail, label: t.common.email, value: SITE.email, href: `mailto:${SITE.email}` },
-    { icon: Phone, label: t.common.phone, value: SITE.phone, href: SITE.phoneHref },
-    { icon: MessageCircle, label: t.common.whatsapp, value: t.common.chatNow, href: SITE.whatsapp },
-    { icon: FaLinkedin, label: t.common.linkedin, value: t.common.connect, href: SITE.linkedin },
-    { icon: FaGithub, label: t.common.github, value: t.common.follow, href: SITE.github },
-  ];
+    settings.email
+      ? {
+          icon: Mail,
+          label: t.common.email,
+          value: settings.email,
+          href: `mailto:${settings.email}`,
+        }
+      : null,
+    settings.phone
+      ? {
+          icon: Phone,
+          label: t.common.phone,
+          value: settings.phone,
+          href: settings.phoneHref || `tel:${settings.phone}`,
+        }
+      : null,
+    settings.whatsapp
+      ? {
+          icon: MessageCircle,
+          label: t.common.whatsapp,
+          value: t.common.chatNow,
+          href: settings.whatsapp,
+        }
+      : null,
+    settings.linkedin
+      ? {
+          icon: FaLinkedin,
+          label: t.common.linkedin,
+          value: t.common.connect,
+          href: settings.linkedin,
+        }
+      : null,
+    settings.github
+      ? {
+          icon: FaGithub,
+          label: t.common.github,
+          value: t.common.follow,
+          href: settings.github,
+        }
+      : null,
+    settings.twitter
+      ? {
+          icon: FaXTwitter,
+          label: t.common.twitter,
+          value: t.common.follow,
+          href: settings.twitter,
+        }
+      : null,
+    settings.instagram
+      ? {
+          icon: FaInstagram,
+          label: t.common.instagram,
+          value: t.common.follow,
+          href: settings.instagram,
+        }
+      : null,
+    settings.youtube
+      ? {
+          icon: FaYoutube,
+          label: t.common.youtube,
+          value: t.common.follow,
+          href: settings.youtube,
+        }
+      : null,
+  ].filter(Boolean) as Array<{
+    icon: typeof Mail;
+    label: string;
+    value: string;
+    href: string;
+  }>;
 
   return (
     <section id="contact" className="section-padding relative">
@@ -51,7 +117,7 @@ export function Contact() {
                     <input
                       required
                       name="name"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 outline-none transition focus:border-accent/40"
+                      className="w-full rounded-2xl border border-line bg-[var(--card)] px-4 py-3 outline-none transition focus:border-accent/40"
                     />
                   </label>
                   <label className="block text-sm">
@@ -60,7 +126,7 @@ export function Contact() {
                       required
                       type="email"
                       name="email"
-                      className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 outline-none transition focus:border-accent/40"
+                      className="w-full rounded-2xl border border-line bg-[var(--card)] px-4 py-3 outline-none transition focus:border-accent/40"
                     />
                   </label>
                 </div>
@@ -69,7 +135,7 @@ export function Contact() {
                   <input
                     required
                     name="subject"
-                    className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 outline-none transition focus:border-accent/40"
+                    className="w-full rounded-2xl border border-line bg-[var(--card)] px-4 py-3 outline-none transition focus:border-accent/40"
                   />
                 </label>
                 <label className="block text-sm">
@@ -78,7 +144,7 @@ export function Contact() {
                     required
                     name="message"
                     rows={5}
-                    className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 outline-none transition focus:border-accent/40"
+                    className="w-full resize-none rounded-2xl border border-line bg-[var(--card)] px-4 py-3 outline-none transition focus:border-accent/40"
                   />
                 </label>
                 <MagneticButton type="submit" variant="primary" size="lg" className="w-full sm:w-auto">
@@ -89,7 +155,7 @@ export function Contact() {
           </Reveal>
 
           <Reveal delay={0.1} className="space-y-6">
-            <div className="h-[280px] overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] md:h-[320px]">
+            <div className="h-[280px] overflow-hidden rounded-[2rem] border border-line bg-[var(--card)] md:h-[320px]">
               <InteractiveGlobe className="h-full w-full" />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -97,7 +163,13 @@ export function Contact() {
                 <a
                   key={item.label}
                   href={item.href}
-                  className="flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-4 transition hover:border-accent/30"
+                  target={item.href.startsWith("mailto:") || item.href.startsWith("tel:") ? undefined : "_blank"}
+                  rel={
+                    item.href.startsWith("mailto:") || item.href.startsWith("tel:")
+                      ? undefined
+                      : "noopener noreferrer"
+                  }
+                  className="flex items-center gap-3 rounded-2xl border border-line bg-[var(--card)] px-4 py-4 transition hover:border-accent/30"
                 >
                   <item.icon size={18} className="text-accent" />
                   <div>

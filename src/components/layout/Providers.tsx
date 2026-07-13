@@ -13,11 +13,12 @@ import { Footer } from "@/components/layout/Footer";
 import { AvailabilityStatus } from "@/components/widgets/AvailabilityStatus";
 import { VisitorTracker } from "@/components/analytics/VisitorTracker";
 import { DataFlowStream } from "@/components/effects/DataFlowStream";
+import { SiteSettingsProvider } from "@/components/site/SiteSettingsProvider";
 
 export function Providers({ children }: { children: ReactNode }) {
-  useLenis();
   const pathname = usePathname();
   const isAdmin = pathname?.startsWith("/admin");
+  useLenis(!isAdmin);
   const [loaded, setLoaded] = useState(isAdmin);
 
   useEffect(() => {
@@ -46,15 +47,17 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
       <LanguageProvider>
-        <VisitorTracker />
-        <LoadingScreen done={loaded} />
-        <NoiseOverlay />
-        <MouseGlow />
-        <DataFlowStream />
-        <Navbar />
-        <AvailabilityStatus />
-        <main className="relative z-10 min-h-screen">{children}</main>
-        <Footer />
+        <SiteSettingsProvider>
+          <VisitorTracker />
+          <LoadingScreen done={loaded} />
+          <NoiseOverlay />
+          <MouseGlow />
+          <DataFlowStream />
+          <Navbar />
+          <AvailabilityStatus />
+          <main className="relative z-10 min-h-screen">{children}</main>
+          <Footer />
+        </SiteSettingsProvider>
       </LanguageProvider>
     </ThemeProvider>
   );

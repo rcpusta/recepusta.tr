@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { trackEvent } from "@/lib/analytics-store";
+import { countryFromHeaders, trackEvent } from "@/lib/analytics-store";
 
 export const runtime = "nodejs";
 
@@ -21,19 +21,21 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Geçersiz ziyaretçi" }, { status: 400 });
     }
 
-    // Ignore admin/api noise
     if (pathName.startsWith("/admin") || pathName.startsWith("/api")) {
       return NextResponse.json({ ok: true, skipped: true });
     }
+
+    const country = countryFromHeaders(request.headers);
 
     await trackEvent({
       visitorId,
       path: pathName.slice(0, 200),
       type,
       isNewVisitor: Boolean(body.isNewVisitor),
+      country,
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, country: country || null });
   } catch {
     return NextResponse.json({ error: "Kayıt başarısız" }, { status: 500 });
   }

@@ -9,12 +9,11 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 
 export function CaseStudyDetailContent({ slug }: { slug: string }) {
   const { t } = useLanguage();
-  const index = t.projects.items.findIndex((p) => p.slug === slug);
-  if (index < 0) {
+  const project = t.projects.items.find((p) => p.slug === slug);
+  const meta = projectMeta.find((m) => m.slug === slug);
+  if (!project || !meta) {
     return null;
   }
-  const project = t.projects.items[index];
-  const meta = projectMeta[index];
 
   return (
     <article className="pt-28">

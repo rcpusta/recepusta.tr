@@ -1,5 +1,6 @@
 import { promises as fs } from "fs";
 import path from "path";
+import { getCountryMeta } from "@/data/countryCentroids";
 
 export type DailyStats = {
   pageviews: number;
@@ -16,11 +17,13 @@ export type AnalyticsData = {
   visitorIds: string[];
   daily: Record<string, DailyStats>;
   paths: Record<string, number>;
+  countries: Record<string, number>;
   recent: Array<{
     id: string;
     path: string;
     type: "view" | "entry" | "exit";
     ts: string;
+    country?: string;
   }>;
   updatedAt: string;
 };
@@ -43,6 +46,7 @@ function emptyAnalytics(): AnalyticsData {
     visitorIds: [],
     daily: {},
     paths: {},
+    countries: {},
     recent: [],
     updatedAt: new Date().toISOString(),
   };
@@ -78,15 +82,18 @@ export type TrackEvent = {
   path: string;
   type: "view" | "entry" | "exit";
   isNewVisitor?: boolean;
+  country?: string;
 };
 
 export async function trackEvent(event: TrackEvent) {
   const data = await readAnalytics();
   const day = todayKey();
   if (!data.daily[day]) data.daily[day] = emptyDay();
+  if (!data.countries) data.countries = {};
 
   const pathKey = event.path.split("?")[0] || "/";
   const known = data.visitorIds.includes(event.visitorId);
+  const country = (event.country || "").toUpperCase().slice(0, 3);
 
   if (event.type === "view") {
     data.totalPageviews += 1;
@@ -97,6 +104,9 @@ export async function trackEvent(event: TrackEvent) {
   if (event.type === "entry") {
     data.totalEntries += 1;
     data.daily[day]!.entries += 1;
+    if (country && country !== "XX" && country !== "T1") {
+      data.countries[country] = (data.countries[country] || 0) + 1;
+    }
   }
 
   if (event.type === "exit") {
@@ -120,6 +130,7 @@ export async function trackEvent(event: TrackEvent) {
     path: pathKey,
     type: event.type,
     ts: new Date().toISOString(),
+    country: country || undefined,
   });
   data.recent = data.recent.slice(0, MAX_RECENT);
   data.daily = pruneDaily(data.daily);
@@ -142,6 +153,20 @@ export async function getAnalyticsSummary() {
     .slice(0, 8)
     .map(([pathName, views]) => ({ path: pathName, views }));
 
+  const countries = Object.entries(data.countries || {})
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 40)
+    .map(([code, count]) => {
+      const meta = getCountryMeta(code);
+      return {
+        code,
+        name: meta.name,
+        count,
+        lat: meta.lat,
+        lng: meta.lng,
+      };
+    });
+
   const today = data.daily[todayKey()] || emptyDay();
 
   return {
@@ -154,7 +179,22 @@ export async function getAnalyticsSummary() {
     today,
     last14,
     topPaths,
+    countries,
     recent: data.recent,
     updatedAt: data.updatedAt,
   };
+}
+
+export function countryFromHeaders(headers: Headers): string {
+  const candidates = [
+    headers.get("cf-ipcountry"),
+    headers.get("x-vercel-ip-country"),
+    headers.get("x-country-code"),
+    headers.get("cloudfront-viewer-country"),
+  ];
+  for (const value of candidates) {
+    const code = value?.trim().toUpperCase();
+    if (code && code.length === 2 && code !== "XX" && code !== "T1") return code;
+  }
+  return "";
 }

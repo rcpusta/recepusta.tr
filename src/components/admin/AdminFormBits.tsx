@@ -11,6 +11,8 @@ type FieldProps = {
   rows?: number;
   placeholder?: string;
   required?: boolean;
+  type?: "text" | "password" | "email" | "url";
+  autoComplete?: string;
 };
 
 export function AdminField({
@@ -21,6 +23,8 @@ export function AdminField({
   rows = 4,
   placeholder,
   required,
+  type = "text",
+  autoComplete,
 }: FieldProps) {
   const className =
     "mt-2 w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-white/30 focus:border-cyan-400/40";
@@ -40,10 +44,12 @@ export function AdminField({
       ) : (
         <input
           className={className}
+          type={type}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           required={required}
+          autoComplete={autoComplete}
         />
       )}
     </label>

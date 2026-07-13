@@ -21,8 +21,9 @@ export function ProjectsListContent() {
           </h1>
 
           <div className="grid gap-8 md:grid-cols-2">
-            {t.projects.items.map((project, i) => {
-              const meta = projectMeta[i];
+            {t.projects.items.map((project) => {
+              const meta = projectMeta.find((m) => m.slug === project.slug);
+              if (!meta) return null;
               return (
                 <Link
                   key={project.slug}
