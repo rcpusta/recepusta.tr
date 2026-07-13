@@ -206,9 +206,6 @@ export function Services() {
                 })}
               </div>
               <div className="pointer-events-none absolute inset-x-0 bottom-0 h-12 bg-gradient-to-t from-background to-transparent" />
-              <p className="mt-3 text-[10px] uppercase tracking-[0.2em] text-muted">
-                {t.common.scroll} · 5 / {items.length}
-              </p>
             </div>
           </div>
         </div>

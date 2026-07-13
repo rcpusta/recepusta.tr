@@ -20,7 +20,7 @@ export const tr = {
     scroll: "Kaydır",
     backToTop: "Yukarı çık",
     read: "Oku",
-    caseStudy: "Vaka çalışması",
+    caseStudy: "Devamını Oku",
     viewAllArticles: "Tüm içerikler",
     viewAllNews: "Tüm haberler",
     allCaseStudies: "Tüm vaka çalışmaları",

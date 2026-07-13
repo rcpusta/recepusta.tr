@@ -20,7 +20,7 @@ export const en = {
     scroll: "Scroll",
     backToTop: "Back to top",
     read: "Read",
-    caseStudy: "Case study",
+    caseStudy: "Read more",
     viewAllArticles: "View all content",
     viewAllNews: "View all news",
     allCaseStudies: "All case studies",
