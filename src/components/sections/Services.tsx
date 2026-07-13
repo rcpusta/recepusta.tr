@@ -126,6 +126,8 @@ export function Services() {
           <div className="lg:col-span-6">
             <div className="relative">
               <div
+                data-lenis-prevent
+                data-lenis-prevent-wheel
                 className={cn(
                   "max-h-[22.5rem] overflow-y-auto overscroll-contain border-t border-line scroll-smooth md:max-h-[26rem]",
                   "[scrollbar-width:thin] [scrollbar-color:var(--accent)_transparent]",
@@ -133,6 +135,7 @@ export function Services() {
                   "[&::-webkit-scrollbar-track]:bg-transparent",
                   "[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-[var(--accent)]/35"
                 )}
+                onWheel={(e) => e.stopPropagation()}
               >
                 {items.map((service, i) => {
                   const Icon = icons[serviceIcons[i]] ?? Network;

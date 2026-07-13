@@ -18,6 +18,10 @@ export function useLenis(enabled = true) {
       duration: 1.15,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      prevent: (node) =>
+        node.hasAttribute("data-lenis-prevent") ||
+        node.hasAttribute("data-lenis-prevent-wheel") ||
+        Boolean(node.closest("[data-lenis-prevent], [data-lenis-prevent-wheel]")),
     });
 
     lenis.on("scroll", ScrollTrigger.update);
