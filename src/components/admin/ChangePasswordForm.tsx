@@ -40,16 +40,12 @@ export function ChangePasswordForm() {
       onSubmit={onSubmit}
       className="rounded-2xl border border-cyan-500/15 bg-[#0a1220]/70 p-5 md:p-6"
     >
-      <div className="mb-1 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-400/60">
+      <div className="mb-5 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-cyan-400/60">
         <span className="size-1.5 animate-pulse rounded-full bg-emerald-400" />
         ssh root@admin — passwd
       </div>
-      <h2 className="font-heading text-lg text-white">Şifre değiştir</h2>
-      <p className="mt-1 text-sm text-white/45">
-        Admin paneli giriş şifresini buradan güncelleyin. En az 8 karakter olmalı.
-      </p>
 
-      <div className="mt-5 grid gap-4 md:grid-cols-1">
+      <div className="grid gap-4 md:grid-cols-1">
         <AdminField
           label="Mevcut şifre"
           type="password"
