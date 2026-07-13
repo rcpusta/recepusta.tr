@@ -4,11 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import { navLinks } from "@/data/content";
+import { navHrefs } from "@/data/content";
 import { MagneticButton } from "@/components/ui/MagneticButton";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { Logo } from "@/components/ui/Logo";
+import { useLanguage } from "@/i18n/LanguageProvider";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
+  const { t } = useLanguage();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -30,7 +34,7 @@ export function Navbar() {
       <motion.header
         initial={{ y: -40, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 1.9, duration: 0.7 }}
+        transition={{ delay: 1.5, duration: 0.7 }}
         className={cn(
           "fixed top-0 left-0 right-0 z-40 transition-all duration-500",
           scrolled ? "py-3" : "py-6"
@@ -42,37 +46,39 @@ export function Navbar() {
             scrolled && "mx-4 md:mx-8 max-w-6xl rounded-2xl glass px-5 py-3"
           )}
         >
-          <Link href="/" className="group relative z-50 font-heading text-xl font-semibold tracking-tight">
-            Recep <span className="gradient-text">Usta</span>
-          </Link>
+          <Logo href="/" size="md" priority />
 
           <nav className="hidden items-center gap-8 lg:flex" aria-label="Primary">
-            {navLinks.map((link) => (
+            {navHrefs.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className="text-sm text-muted transition-colors hover:text-white"
               >
-                {link.label}
+                {t.nav[link.key]}
               </Link>
             ))}
           </nav>
 
-          <div className="hidden lg:block">
+          <div className="hidden items-center gap-3 lg:flex">
+            <LanguageSwitcher />
             <MagneticButton href="/contact" variant="primary" size="sm">
-              Let&apos;s Talk
+              {t.nav.letsTalk}
             </MagneticButton>
           </div>
 
-          <button
-            type="button"
-            className="relative z-50 rounded-full border border-white/10 p-2.5 text-white lg:hidden"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X size={20} /> : <Menu size={20} />}
-          </button>
+          <div className="flex items-center gap-2 lg:hidden">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              className="relative z-50 rounded-full border border-white/10 p-2.5 text-white"
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              onClick={() => setOpen((v) => !v)}
+            >
+              {open ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          </div>
         </div>
       </motion.header>
 
@@ -85,7 +91,7 @@ export function Navbar() {
             className="fixed inset-0 z-30 bg-[#050505]/95 backdrop-blur-2xl lg:hidden"
           >
             <nav className="flex h-full flex-col items-center justify-center gap-8" aria-label="Mobile">
-              {navLinks.map((link, i) => (
+              {navHrefs.map((link, i) => (
                 <motion.div
                   key={link.href}
                   initial={{ y: 24, opacity: 0 }}
@@ -97,7 +103,7 @@ export function Navbar() {
                     onClick={() => setOpen(false)}
                     className="font-heading text-3xl font-medium"
                   >
-                    {link.label}
+                    {t.nav[link.key]}
                   </Link>
                 </motion.div>
               ))}

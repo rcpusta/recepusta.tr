@@ -15,9 +15,10 @@ import {
   Handshake,
   type LucideIcon,
 } from "lucide-react";
-import { services } from "@/data/services";
+import { serviceIcons } from "@/data/content";
 import { SectionHeading } from "@/components/ui/Reveal";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const icons: Record<string, LucideIcon> = {
   Network,
@@ -33,20 +34,21 @@ const icons: Record<string, LucideIcon> = {
 };
 
 export function Services() {
+  const { t } = useLanguage();
   const [active, setActive] = useState<string | null>(null);
 
   return (
     <section id="services" className="section-padding relative">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          eyebrow="Services"
-          title="Capabilities engineered for scale."
-          description="Premium infrastructure and software services — each delivered with clarity, security and operational excellence."
+          eyebrow={t.services.eyebrow}
+          title={t.services.title}
+          description={t.services.description}
         />
 
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-          {services.map((service, i) => {
-            const Icon = icons[service.icon] ?? Network;
+          {t.services.items.map((service, i) => {
+            const Icon = icons[serviceIcons[i]] ?? Network;
             const open = active === service.id;
             return (
               <GlassCard key={service.id} className="p-0">
@@ -78,7 +80,7 @@ export function Services() {
                     )}
                   </AnimatePresence>
                   <span className="mt-4 inline-block text-xs uppercase tracking-[0.2em] text-primary/80">
-                    {open ? "Expanded" : "Hover to expand"}
+                    {open ? t.common.expanded : t.common.hoverExpand}
                   </span>
                 </button>
               </GlassCard>

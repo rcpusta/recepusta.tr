@@ -2,6 +2,7 @@
 
 import { techStack } from "@/data/content";
 import { SectionHeading } from "@/components/ui/Reveal";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boolean }) {
   const doubled = [...items, ...items];
@@ -26,17 +27,18 @@ function MarqueeRow({ items, reverse = false }: { items: string[]; reverse?: boo
 }
 
 export function TechStack() {
+  const { t } = useLanguage();
   const mid = Math.ceil(techStack.length / 2);
-  const first = techStack.slice(0, mid).map((t) => t.name);
-  const second = techStack.slice(mid).map((t) => t.name);
+  const first = techStack.slice(0, mid).map((item) => item.name);
+  const second = techStack.slice(mid).map((item) => item.name);
 
   return (
     <section id="tech" className="section-padding relative overflow-hidden">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          eyebrow="Tech Stack"
-          title="Tools of a modern infrastructure studio."
-          description="From network silicon to cloud orchestration and AI pipelines — selected for reliability and craft."
+          eyebrow={t.tech.eyebrow}
+          title={t.tech.title}
+          description={t.tech.description}
           align="center"
         />
       </div>

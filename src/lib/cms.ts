@@ -3,31 +3,36 @@
  * Swap these loaders for Sanity / Payload / Notion later without changing UI.
  */
 
-import { projects } from "@/data/projects";
-import { blogPosts } from "@/data/blog";
-import { services } from "@/data/services";
-import type { BlogPost, Project, Service } from "@/types";
+import { projectMeta, blogMeta, serviceIcons } from "@/data/content";
+import { getDictionary } from "@/i18n/getDictionary";
+import type { Locale } from "@/i18n/config";
 
-export type CMSCollection = "projects" | "posts" | "services";
-
-export async function getProjects(): Promise<Project[]> {
-  return projects;
+export async function getProjects(locale: Locale = "tr") {
+  const t = getDictionary(locale);
+  return t.projects.items.map((item, i) => ({ ...item, ...projectMeta[i] }));
 }
 
-export async function getProject(slug: string): Promise<Project | undefined> {
+export async function getProject(slug: string, locale: Locale = "tr") {
+  const projects = await getProjects(locale);
   return projects.find((p) => p.slug === slug);
 }
 
-export async function getPosts(): Promise<BlogPost[]> {
-  return blogPosts;
+export async function getPosts(locale: Locale = "tr") {
+  const t = getDictionary(locale);
+  return t.blog.items.map((item, i) => ({ ...item, ...blogMeta[i] }));
 }
 
-export async function getPost(slug: string): Promise<BlogPost | undefined> {
-  return blogPosts.find((p) => p.slug === slug);
+export async function getPost(slug: string, locale: Locale = "tr") {
+  const posts = await getPosts(locale);
+  return posts.find((p) => p.slug === slug);
 }
 
-export async function getServices(): Promise<Service[]> {
-  return services;
+export async function getServices(locale: Locale = "tr") {
+  const t = getDictionary(locale);
+  return t.services.items.map((item, i) => ({
+    ...item,
+    icon: serviceIcons[i],
+  }));
 }
 
 export const cmsConfig = {

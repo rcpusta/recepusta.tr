@@ -8,6 +8,7 @@ import { SectionHeading, Reveal } from "@/components/ui/Reveal";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { SITE } from "@/lib/utils";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const InteractiveGlobe = dynamic(
   () => import("@/components/three/InteractiveGlobe").then((m) => m.InteractiveGlobe),
@@ -15,6 +16,7 @@ const InteractiveGlobe = dynamic(
 );
 
 export function Contact() {
+  const { t } = useLanguage();
   const [sent, setSent] = useState(false);
 
   const onSubmit = (e: FormEvent) => {
@@ -22,13 +24,21 @@ export function Contact() {
     setSent(true);
   };
 
+  const contacts = [
+    { icon: Mail, label: t.common.email, value: SITE.email, href: `mailto:${SITE.email}` },
+    { icon: Phone, label: t.common.phone, value: SITE.phone, href: SITE.phoneHref },
+    { icon: MessageCircle, label: t.common.whatsapp, value: t.common.chatNow, href: SITE.whatsapp },
+    { icon: FaLinkedin, label: t.common.linkedin, value: t.common.connect, href: SITE.linkedin },
+    { icon: FaGithub, label: t.common.github, value: t.common.follow, href: SITE.github },
+  ];
+
   return (
     <section id="contact" className="section-padding relative">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          eyebrow="Contact"
-          title="Let's build something exceptional."
-          description="Share your vision — infrastructure, software, security or AI automation."
+          eyebrow={t.contact.eyebrow}
+          title={t.contact.title}
+          description={t.contact.description}
         />
 
         <div className="grid gap-10 lg:grid-cols-2">
@@ -37,7 +47,7 @@ export function Contact() {
               <form onSubmit={onSubmit} className="space-y-5">
                 <div className="grid gap-5 sm:grid-cols-2">
                   <label className="block text-sm">
-                    <span className="mb-2 block text-muted">Name</span>
+                    <span className="mb-2 block text-muted">{t.common.name}</span>
                     <input
                       required
                       name="name"
@@ -45,7 +55,7 @@ export function Contact() {
                     />
                   </label>
                   <label className="block text-sm">
-                    <span className="mb-2 block text-muted">Email</span>
+                    <span className="mb-2 block text-muted">{t.common.email}</span>
                     <input
                       required
                       type="email"
@@ -55,7 +65,7 @@ export function Contact() {
                   </label>
                 </div>
                 <label className="block text-sm">
-                  <span className="mb-2 block text-muted">Subject</span>
+                  <span className="mb-2 block text-muted">{t.common.subject}</span>
                   <input
                     required
                     name="subject"
@@ -63,7 +73,7 @@ export function Contact() {
                   />
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-2 block text-muted">Message</span>
+                  <span className="mb-2 block text-muted">{t.common.message}</span>
                   <textarea
                     required
                     name="message"
@@ -72,7 +82,7 @@ export function Contact() {
                   />
                 </label>
                 <MagneticButton type="submit" variant="primary" size="lg" className="w-full sm:w-auto">
-                  {sent ? "Message queued ✓" : "Send Message"}
+                  {sent ? t.common.messageQueued : t.common.sendMessage}
                 </MagneticButton>
               </form>
             </GlassCard>
@@ -83,13 +93,7 @@ export function Contact() {
               <InteractiveGlobe className="h-full w-full" />
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
-              {[
-                { icon: Mail, label: "Email", value: SITE.email, href: `mailto:${SITE.email}` },
-                { icon: Phone, label: "Phone", value: SITE.phone, href: `tel:${SITE.phone}` },
-                { icon: MessageCircle, label: "WhatsApp", value: "Chat now", href: SITE.whatsapp },
-                { icon: FaLinkedin, label: "LinkedIn", value: "Connect", href: SITE.linkedin },
-                { icon: FaGithub, label: "GitHub", value: "Follow", href: SITE.github },
-              ].map((item) => (
+              {contacts.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}

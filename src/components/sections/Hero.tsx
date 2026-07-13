@@ -6,6 +6,7 @@ import { ArrowDown, ArrowRight } from "lucide-react";
 import { MagneticButton } from "@/components/ui/MagneticButton";
 import { TypingText } from "@/components/ui/TypingText";
 import { AuroraBackground } from "@/components/effects/AuroraBackground";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 const NetworkSphere = dynamic(
   () => import("@/components/three/NetworkSphere").then((m) => m.NetworkSphere),
@@ -17,15 +18,9 @@ const SplineScene = dynamic(
   { ssr: false }
 );
 
-const phrases = [
-  "Network Engineering",
-  "Cloud Systems",
-  "Cyber Security",
-  "Software Development",
-  "AI Automation",
-];
-
 export function Hero() {
+  const { t, locale } = useLanguage();
+
   return (
     <section className="relative flex min-h-screen items-center overflow-hidden pt-24">
       <AuroraBackground />
@@ -40,42 +35,44 @@ export function Hero() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2, duration: 0.7 }}
+          transition={{ delay: 1.5, duration: 0.7 }}
           className="mb-6 text-xs uppercase tracking-[0.4em] text-accent"
         >
-          Recep Usta — Digital Infrastructure
+          {t.hero.eyebrow}
         </motion.p>
 
         <motion.h1
+          key={locale}
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2.15, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ delay: 1.65, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
           className="heading-xl max-w-5xl"
         >
-          Building Modern{" "}
-          <span className="gradient-text">Digital Infrastructure.</span>
+          {t.hero.titleBefore}{" "}
+          <span className="gradient-text">{t.hero.titleAccent}</span>
+          {t.hero.titleAfter}
         </motion.h1>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2.35, duration: 0.7 }}
+          transition={{ delay: 1.85, duration: 0.7 }}
           className="mt-8 h-8 font-heading text-xl md:text-2xl text-muted"
         >
-          <TypingText phrases={phrases} />
+          <TypingText key={locale} phrases={[...t.hero.phrases]} />
         </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2.5, duration: 0.7 }}
+          transition={{ delay: 2, duration: 0.7 }}
           className="mt-12 flex flex-wrap gap-4"
         >
           <MagneticButton href="/contact" variant="primary" size="lg">
-            Let&apos;s Work Together <ArrowRight size={18} />
+            {t.hero.ctaPrimary} <ArrowRight size={18} />
           </MagneticButton>
           <MagneticButton href="/projects" variant="secondary" size="lg">
-            Explore Projects
+            {t.hero.ctaSecondary}
           </MagneticButton>
         </motion.div>
       </div>
@@ -84,10 +81,10 @@ export function Hero() {
         href="#about"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.8 }}
+        transition={{ delay: 2.2 }}
         className="absolute bottom-10 left-1/2 flex -translate-x-1/2 flex-col items-center gap-2 text-xs uppercase tracking-[0.3em] text-muted"
       >
-        Scroll
+        {t.common.scroll}
         <ArrowDown size={16} className="animate-bounce" />
       </motion.a>
     </section>

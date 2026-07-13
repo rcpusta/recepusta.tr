@@ -25,10 +25,8 @@ export function GlassCard({ children, className, glow = true }: Props) {
     const py = e.clientY - rect.top;
     x.set(px);
     y.set(py);
-    const rx = ((py - rect.height / 2) / rect.height) * -8;
-    const ry = ((px - rect.width / 2) / rect.width) * 8;
-    rotateX.set(rx);
-    rotateY.set(ry);
+    rotateX.set(((py - rect.height / 2) / rect.height) * -8);
+    rotateY.set(((px - rect.width / 2) / rect.width) * 8);
   };
 
   const reset = () => {

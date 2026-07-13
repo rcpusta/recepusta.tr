@@ -3,9 +3,9 @@ import { Contact } from "@/components/sections/Contact";
 import { createMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = createMetadata({
-  title: "Contact",
+  title: "İletişim",
   description:
-    "Contact Recep Usta for network engineering, cloud systems, cyber security, software development and AI automation projects.",
+    "Recep Usta ile iletişime geçin — info@recepusta.tr · 0545 428 1952. Ağ, bulut, güvenlik, yazılım ve YZ otomasyonu.",
   path: "/contact",
 });
 

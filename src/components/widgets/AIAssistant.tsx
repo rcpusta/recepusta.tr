@@ -1,34 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, Send, X } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
-const replies = [
-  "I can help with network design, cloud systems, security and custom software. What are you building?",
-  "For ISP or enterprise infrastructure, start with a discovery call — I'll map architecture and risks.",
-  "Yes — AI automation with n8n and custom APIs is available. Share your workflow goals.",
-];
+type Msg = { role: "bot" | "user"; text: string };
 
 export function AIAssistant() {
+  const { t, locale } = useLanguage();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState<{ role: "bot" | "user"; text: string }[]>([
-    {
-      role: "bot",
-      text: "Hi — I'm Recep's AI assistant. Ask about infrastructure, projects, or availability.",
-    },
-  ]);
+  const [messages, setMessages] = useState<Msg[]>([]);
+
+  useEffect(() => {
+    setMessages([{ role: "bot", text: t.widgets.assistantGreeting }]);
+  }, [locale, t.widgets.assistantGreeting]);
 
   const send = () => {
     if (!input.trim()) return;
     const userText = input.trim();
     setInput("");
-    setMessages((m) => [
-      ...m,
-      { role: "user", text: userText },
-      { role: "bot", text: replies[Math.floor(Math.random() * replies.length)] },
-    ]);
+    const replies = t.widgets.assistantReplies;
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    setMessages((m) => [...m, { role: "user", text: userText }, { role: "bot", text: reply }]);
   };
 
   return (
@@ -39,7 +34,7 @@ export function AIAssistant() {
         className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-secondary shadow-glow"
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.96 }}
-        aria-label="Open AI assistant"
+        aria-label={t.widgets.assistantTitle}
       >
         <Bot size={22} />
       </motion.button>
@@ -54,10 +49,10 @@ export function AIAssistant() {
           >
             <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
               <div>
-                <p className="text-sm font-medium">AI Assistant</p>
-                <p className="text-xs text-muted">Always-on guidance</p>
+                <p className="text-sm font-medium">{t.widgets.assistantTitle}</p>
+                <p className="text-xs text-muted">{t.widgets.assistantSub}</p>
               </div>
-              <button type="button" onClick={() => setOpen(false)} aria-label="Close assistant">
+              <button type="button" onClick={() => setOpen(false)} aria-label="Close">
                 <X size={18} className="text-muted" />
               </button>
             </div>
@@ -66,9 +61,7 @@ export function AIAssistant() {
                 <div
                   key={i}
                   className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
-                    m.role === "bot"
-                      ? "bg-white/5 text-white"
-                      : "ml-auto bg-primary/30 text-white"
+                    m.role === "bot" ? "bg-white/5 text-white" : "ml-auto bg-primary/30 text-white"
                   }`}
                 >
                   {m.text}
@@ -80,14 +73,14 @@ export function AIAssistant() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && send()}
-                placeholder="Ask anything..."
+                placeholder={t.widgets.assistantPlaceholder}
                 className="flex-1 rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm outline-none focus:border-accent/40"
               />
               <button
                 type="button"
                 onClick={send}
                 className="rounded-full bg-accent/20 p-2 text-accent"
-                aria-label="Send message"
+                aria-label="Send"
               >
                 <Send size={16} />
               </button>

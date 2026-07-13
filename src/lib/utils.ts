@@ -7,15 +7,16 @@ export function cn(...inputs: ClassValue[]) {
 
 export const SITE = {
   name: "Recep Usta",
-  title: "Recep Usta — Modern Digital Infrastructure",
+  title: "Recep Usta — Modern Dijital Altyapı",
   description:
-    "Network engineering, cloud systems, cyber security, software development and AI automation. Building enterprise-grade digital infrastructure with premium quality.",
-  url: "https://recepusta.com",
-  email: "hello@recepusta.com",
-  phone: "+90 555 000 00 00",
-  whatsapp: "https://wa.me/905550000000",
+    "Ağ mühendisliği, bulut sistemleri, siber güvenlik, yazılım geliştirme ve yapay zeka otomasyonu. Kurumsal kalitede dijital altyapı.",
+  url: "https://recepusta.tr",
+  email: "info@recepusta.tr",
+  phone: "0545 428 1952",
+  phoneHref: "tel:+905454281952",
+  whatsapp: "https://wa.me/905454281952",
   linkedin: "https://linkedin.com/in/recepusta",
   github: "https://github.com/recepusta",
-  locale: "en_US",
+  locale: "tr_TR",
   twitter: "@recepusta",
 } as const;

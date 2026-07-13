@@ -56,14 +56,14 @@ export const personSchema = {
   name: SITE.name,
   url: SITE.url,
   email: SITE.email,
-  jobTitle: "Network Engineer & Full Stack Developer",
+  jobTitle: "Ağ Mühendisi & Full Stack Geliştirici",
   sameAs: [SITE.linkedin, SITE.github],
   knowsAbout: [
-    "Network Infrastructure",
-    "Cloud Systems",
-    "Cyber Security",
-    "Software Development",
-    "AI Automation",
+    "Ağ Altyapısı",
+    "Bulut Sistemleri",
+    "Siber Güvenlik",
+    "Yazılım Geliştirme",
+    "YZ Otomasyonu",
   ],
 };
 

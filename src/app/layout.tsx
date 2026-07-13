@@ -18,14 +18,20 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   ...createMetadata(),
+  icons: {
+    icon: [{ url: "/images/brand/logo.png", type: "image/png" }],
+    apple: [{ url: "/images/brand/logo.png" }],
+  },
   keywords: [
     "Recep Usta",
+    "Ağ Mühendisliği",
+    "Bulut Sistemleri",
+    "Siber Güvenlik",
+    "Yazılım Geliştirme",
+    "Yapay Zeka Otomasyonu",
+    "Altyapı",
     "Network Engineering",
     "Cloud Systems",
-    "Cyber Security",
-    "Software Development",
-    "AI Automation",
-    "Infrastructure",
   ],
   authors: [{ name: "Recep Usta" }],
   creator: "Recep Usta",
@@ -33,7 +39,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
+    <html lang="tr" className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <head>
         <script
           type="application/ld+json"

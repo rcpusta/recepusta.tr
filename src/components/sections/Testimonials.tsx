@@ -1,7 +1,7 @@
 "use client";
 
-import { testimonials } from "@/data/content";
 import { SectionHeading } from "@/components/ui/Reveal";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 function Card({
   name,
@@ -28,21 +28,22 @@ function Card({
 }
 
 export function Testimonials() {
-  const loop = [...testimonials, ...testimonials];
+  const { t, locale } = useLanguage();
+  const loop = [...t.testimonials.items, ...t.testimonials.items];
 
   return (
     <section className="section-padding relative overflow-hidden">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
-          eyebrow="Testimonials"
-          title="Trusted by operators and founders."
+          eyebrow={t.testimonials.eyebrow}
+          title={t.testimonials.title}
           align="center"
         />
       </div>
-      <div className="relative mt-4">
+      <div className="relative mt-4" key={locale}>
         <div className="flex w-max gap-5 animate-marquee hover:[animation-play-state:paused]">
-          {loop.map((t, i) => (
-            <Card key={`${t.id}-${i}`} {...t} />
+          {loop.map((item, i) => (
+            <Card key={`${item.name}-${i}`} {...item} />
           ))}
         </div>
         <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#050505]" />

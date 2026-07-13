@@ -23,7 +23,7 @@ export function MagneticButton({
   className,
   type = "button",
 }: Props) {
-  const { ref, onMouseMove, onMouseLeave } = useMagnetic(0.4);
+  const { ref, onMouseMove, onMouseLeave } = useMagnetic(0.35);
 
   const styles = cn(
     "relative inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 will-change-transform",

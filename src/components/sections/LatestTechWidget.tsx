@@ -5,8 +5,10 @@ import { techStack } from "@/data/content";
 import { Reveal } from "@/components/ui/Reveal";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Sparkles } from "lucide-react";
+import { useLanguage } from "@/i18n/LanguageProvider";
 
 export function LatestTechWidget() {
+  const { t } = useLanguage();
   const latest = techStack.slice(0, 8);
 
   return (
@@ -19,21 +21,19 @@ export function LatestTechWidget() {
           <GlassCard className="p-6">
             <div className="mb-4 flex items-center gap-2">
               <Sparkles size={18} className="text-secondary" />
-              <h3 className="font-heading text-lg font-medium">Latest Technologies</h3>
+              <h3 className="font-heading text-lg font-medium">{t.widgets.latestTech}</h3>
             </div>
             <div className="flex flex-wrap gap-2">
-              {latest.map((t) => (
+              {latest.map((item) => (
                 <span
-                  key={t.name}
+                  key={item.name}
                   className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-sm text-muted"
                 >
-                  {t.name}
+                  {item.name}
                 </span>
               ))}
             </div>
-            <p className="mt-5 text-sm text-muted">
-              Continuously evaluating platforms that raise reliability, security and delivery speed.
-            </p>
+            <p className="mt-5 text-sm text-muted">{t.widgets.latestTechDesc}</p>
           </GlassCard>
         </Reveal>
       </div>
