@@ -17,7 +17,7 @@ export function LoadingScreen({ done }: { done: boolean }) {
           exit={{ opacity: 0, transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] } }}
           aria-hidden={done}
         >
-          <SshBootBackground variant="boot" />
+          <SshBootBackground variant="boot" loop />
 
           <div className="relative z-10 flex flex-col items-center gap-8">
             <motion.div

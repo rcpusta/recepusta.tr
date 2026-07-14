@@ -35,6 +35,8 @@ const ADMIN_BOOT_LINES = [
   { text: "[  OK  ] Blog & News CMS online", tone: "ok" },
   { text: "root@admin:~# systemctl status analytics.service", tone: "cmd" },
   { text: "[  OK  ] Traffic & metrics collectors active", tone: "ok" },
+  { text: "root@admin:~# systemctl status tickets.service", tone: "cmd" },
+  { text: "[  OK  ] Ticket queue listeners online", tone: "ok" },
   { text: "root@admin:~# ./gate --await-credentials", tone: "cmd" },
   { text: "[······] Waiting for operator authentication…", tone: "dim" },
   { text: "[  OK  ] Secure shell ready — enter password to continue", tone: "ok" },
@@ -49,7 +51,7 @@ function toneClass(tone: "cmd" | "ok" | "warn" | "dim") {
     case "warn":
       return "text-amber-300/80";
     default:
-      return "text-white/35";
+      return "text-white/40";
   }
 }
 
@@ -57,58 +59,86 @@ export function SshBootBackground({
   variant = "boot",
   className,
   loop = false,
+  fullPage = false,
+  onComplete,
 }: {
   variant?: "boot" | "admin";
   className?: string;
   loop?: boolean;
+  fullPage?: boolean;
+  onComplete?: () => void;
 }) {
   const lines = variant === "admin" ? ADMIN_BOOT_LINES : BOOT_LINES;
   const [visibleCount, setVisibleCount] = useState(1);
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
     setVisibleCount(1);
+    setDone(false);
     const id = window.setInterval(() => {
       setVisibleCount((c) => {
         if (c >= lines.length) {
           if (!loop) {
             window.clearInterval(id);
+            setDone(true);
             return c;
           }
           return 1;
         }
         return c + 1;
       });
-    }, variant === "admin" ? 95 : 70);
+    }, variant === "admin" ? 85 : 70);
     return () => window.clearInterval(id);
   }, [lines.length, loop, variant]);
 
+  useEffect(() => {
+    if (done) onComplete?.();
+  }, [done, onComplete]);
+
   return (
     <div
-      className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
+      className={cn(
+        "pointer-events-none overflow-hidden",
+        fullPage ? "fixed inset-0 z-0" : "absolute inset-0",
+        className
+      )}
       aria-hidden
     >
       <div className="absolute inset-0 bg-[#030508]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(34,211,238,0.07),transparent_55%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(34,211,238,0.1),transparent_50%)]" />
       <div
-        className="absolute inset-0 opacity-[0.12]"
+        className="absolute inset-0 opacity-[0.14]"
         style={{
-          backgroundImage: "linear-gradient(rgba(34,211,238,0.15) 1px, transparent 1px)",
+          backgroundImage: "linear-gradient(rgba(34,211,238,0.16) 1px, transparent 1px)",
           backgroundSize: "100% 3px",
         }}
       />
 
-      <div className="absolute inset-0 flex items-start justify-center px-4 pt-[10vh] md:px-10 md:pt-[8vh]">
-        <div className="w-full max-w-3xl font-mono text-[11px] leading-relaxed md:text-[12.5px]">
-          <div className="mb-4 flex items-center gap-2 border-b border-cyan-500/20 pb-3 text-[10px] uppercase tracking-[0.2em] text-cyan-400/50">
+      <div
+        className={cn(
+          "absolute inset-0 flex px-5 md:px-10",
+          fullPage ? "items-stretch justify-start pt-8 pb-8 md:pt-12 md:pb-12" : "items-start justify-center pt-[10vh] md:pt-[8vh]"
+        )}
+      >
+        <div
+          className={cn(
+            "font-mono leading-relaxed",
+            fullPage
+              ? "flex h-full w-full max-w-5xl flex-col text-[12px] md:text-[13.5px]"
+              : "w-full max-w-3xl text-[11px] md:text-[12.5px]"
+          )}
+        >
+          <div className="mb-4 flex shrink-0 items-center gap-2 border-b border-cyan-500/20 pb-3 text-[10px] uppercase tracking-[0.2em] text-cyan-400/55">
             <span className="inline-flex gap-1.5">
               <span className="h-2 w-2 rounded-full bg-red-400/70" />
               <span className="h-2 w-2 rounded-full bg-amber-400/70" />
               <span className="h-2 w-2 rounded-full bg-emerald-400/70" />
             </span>
             <span>{variant === "admin" ? "ssh — root@admin" : "ssh — root@edge-01"}</span>
+            <span className="ml-auto hidden text-white/25 sm:inline">session · secure</span>
           </div>
 
-          <div className="space-y-1">
+          <div className={cn("space-y-1.5", fullPage && "min-h-0 flex-1 overflow-hidden")}>
             {lines.slice(0, visibleCount).map((line, i) => (
               <motion.p
                 key={`${line.text}-${i}`}
@@ -133,8 +163,14 @@ export function SshBootBackground({
         </div>
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-[#030508]/20 via-[#030508]/55 to-[#030508]" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(3,5,8,0.78)_70%)]" />
+      {!fullPage ? (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030508]/20 via-[#030508]/55 to-[#030508]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,rgba(3,5,8,0.78)_70%)]" />
+        </>
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-transparent to-[#030508]/55" />
+      )}
     </div>
   );
 }

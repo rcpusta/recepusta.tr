@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import {
   Activity,
@@ -377,40 +377,53 @@ type Props = {
     news: number;
     publishedNews: number;
   };
+  initialAnalytics?: AnalyticsSummary | null;
+  initialSystem?: SystemMetrics | null;
 };
 
-export function AdminDashboard({ content }: Props) {
-  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(null);
-  const [system, setSystem] = useState<SystemMetrics | null>(null);
-  const [cpuHistory, setCpuHistory] = useState<number[]>([]);
-  const [diskHistory, setDiskHistory] = useState<number[]>([]);
-  const [networkHistory, setNetworkHistory] = useState<number[]>([]);
+export function AdminDashboard({ content, initialAnalytics = null, initialSystem = null }: Props) {
+  const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(initialAnalytics);
+  const [system, setSystem] = useState<SystemMetrics | null>(initialSystem);
+  const [cpuHistory, setCpuHistory] = useState<number[]>(
+    initialSystem ? [initialSystem.cpu.percent] : []
+  );
+  const [diskHistory, setDiskHistory] = useState<number[]>(
+    initialSystem ? [initialSystem.disk.percent] : []
+  );
+  const [networkHistory, setNetworkHistory] = useState<number[]>(
+    initialSystem
+      ? [Math.max(0, initialSystem.network.rxPerSec + initialSystem.network.txPerSec)]
+      : []
+  );
   const [error, setError] = useState("");
   const [tick, setTick] = useState(0);
+  const hasDataRef = useRef(Boolean(initialAnalytics || initialSystem));
 
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       try {
-        const [aRes, sRes] = await Promise.all([
-          fetch("/api/admin/analytics", { cache: "no-store" }),
-          fetch("/api/admin/system", { cache: "no-store" }),
-        ]);
-        if (!aRes.ok || !sRes.ok) throw new Error("Metrikler alınamadı");
-        const aData = (await aRes.json()) as AnalyticsSummary;
-        const sData = (await sRes.json()) as SystemMetrics;
+        const { fetchAdminMetricsAction } = await import("@/app/admin/(panel)/metrics-actions");
+        const result = await fetchAdminMetricsAction();
         if (cancelled) return;
-        setAnalytics(aData);
-        setSystem(sData);
-        setCpuHistory((prev) => [...prev.slice(-39), sData.cpu.percent]);
-        setDiskHistory((prev) => [...prev.slice(-39), sData.disk.percent]);
-        const netTotal = Math.max(0, sData.network.rxPerSec + sData.network.txPerSec);
+        if (!result.ok) {
+          if (!hasDataRef.current) setError(result.error);
+          return;
+        }
+        hasDataRef.current = true;
+        setAnalytics(result.analytics as AnalyticsSummary);
+        setSystem(result.system as SystemMetrics);
+        setCpuHistory((prev) => [...prev.slice(-39), result.system.cpu.percent]);
+        setDiskHistory((prev) => [...prev.slice(-39), result.system.disk.percent]);
+        const netTotal = Math.max(0, result.system.network.rxPerSec + result.system.network.txPerSec);
         setNetworkHistory((prev) => [...prev.slice(-39), netTotal]);
         setError("");
         setTick((t) => t + 1);
       } catch (err) {
-        if (!cancelled) setError(err instanceof Error ? err.message : "Hata");
+        if (!cancelled && !hasDataRef.current) {
+          setError(err instanceof Error ? err.message : "Metrikler alınamadı");
+        }
       }
     }
 
