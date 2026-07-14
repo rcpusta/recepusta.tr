@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import { Reveal, SectionHeading } from "@/components/ui/Reveal";
+import { TypingText } from "@/components/ui/TypingText";
 import { images } from "@/data/content";
 import { TerminalComponent } from "@/components/widgets/TerminalComponent";
 import { CodePreview } from "@/components/widgets/CodePreview";
 import { useLanguage } from "@/i18n/LanguageProvider";
 
 export function About() {
-  const { t } = useLanguage();
+  const { t, locale } = useLanguage();
 
   return (
     <section id="about" className="section-padding relative">
@@ -33,7 +34,9 @@ export function About() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
                 <p className="font-heading text-2xl font-semibold text-white">Recep Usta</p>
-                <p className="text-sm text-white/70">{t.about.role}</p>
+                <p className="mt-1 min-h-[1.5rem] font-terminal text-sm text-accent">
+                  <TypingText key={locale} phrases={[...t.about.roles]} />
+                </p>
               </div>
             </div>
           </Reveal>

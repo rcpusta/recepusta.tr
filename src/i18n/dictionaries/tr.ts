@@ -101,6 +101,13 @@ export const tr = {
     body:
       "Uzmanlık alanlarım: Ağ Altyapısı, Sunucu Sistemleri, Web Sitesi Geliştirme, Bulut, Otomasyon ve Yapay Zeka. Her iş net kapsam, güvenlik odaklı tasarım ve uzun vadeli dokümantasyonla ilerler.",
     role: "Ağ · Bulut · Güvenlik · Yazılım · Yapay Zeka",
+    roles: [
+      "Ağ Altyapısı",
+      "Bulut Sistemleri",
+      "Siber Güvenlik",
+      "Yazılım Geliştirme",
+      "Yapay Zeka Otomasyonu",
+    ],
     pageTitleBefore: "Dijital altyapıyı",
     pageTitleAccent: "hassasiyetle",
     pageTitleAfter: "şekillendiriyorum.",

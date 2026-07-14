@@ -91,7 +91,7 @@ export function Footer() {
                 href="https://www.codexfix.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent transition hover:text-foreground"
+                className="font-medium text-white transition hover:text-white/70"
               >
                 {t.footer.designedByLink}
               </a>

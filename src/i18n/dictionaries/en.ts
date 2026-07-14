@@ -101,6 +101,13 @@ export const en = {
     body:
       "Specializing in Network Infrastructure, Server Systems, Website Development, Cloud, Automation and Artificial Intelligence. Every engagement is scoped for clarity, secured by design, and documented for the long term.",
     role: "Network · Cloud · Security · Software · AI",
+    roles: [
+      "Network Infrastructure",
+      "Cloud Systems",
+      "Cyber Security",
+      "Software Development",
+      "AI Automation",
+    ],
     pageTitleBefore: "Crafting digital infrastructure with",
     pageTitleAccent: "precision",
     pageTitleAfter: ".",
