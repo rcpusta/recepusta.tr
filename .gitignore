@@ -35,6 +35,12 @@ yarn-error.log*
 # admin password hash (runtime override)
 /content/admin-auth.json
 
+# analytics counters (runtime)
+/content/analytics.json
+
+# system metrics history (runtime, last 30m)
+/content/metrics-history.json
+
 # vercel
 .vercel
 

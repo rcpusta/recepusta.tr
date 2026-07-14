@@ -2,6 +2,7 @@ import { AdminDashboard } from "@/components/admin/AdminDashboard";
 import { getAllBlogPosts, getAllNews } from "@/lib/content-store";
 import { getAnalyticsSummary } from "@/lib/analytics-store";
 import { getSystemMetrics } from "@/lib/system-metrics";
+import { getMetricsHistory, recordMetricsSample } from "@/lib/metrics-history-store";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,15 @@ export default async function AdminDashboardPage() {
     getSystemMetrics().catch(() => null),
   ]);
 
+  let history = await getMetricsHistory().catch(() => []);
+  if (system) {
+    history = await recordMetricsSample({
+      cpu: system.cpu.percent,
+      disk: system.disk.percent,
+      net: Math.max(0, system.network.rxPerSec + system.network.txPerSec),
+    }).catch(() => history);
+  }
+
   return (
     <AdminDashboard
       content={{
@@ -23,6 +33,7 @@ export default async function AdminDashboardPage() {
       }}
       initialAnalytics={analytics}
       initialSystem={system}
+      initialHistory={history}
     />
   );
 }

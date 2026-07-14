@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { countryFromHeaders, trackEvent } from "@/lib/analytics-store";
+import { countryFromHeaders, ipFromHeaders, trackEvent } from "@/lib/analytics-store";
 
 export const runtime = "nodejs";
 
@@ -26,6 +26,7 @@ export async function POST(request: Request) {
     }
 
     const country = countryFromHeaders(request.headers);
+    const ip = ipFromHeaders(request.headers);
 
     await trackEvent({
       visitorId,
@@ -33,9 +34,10 @@ export async function POST(request: Request) {
       type,
       isNewVisitor: Boolean(body.isNewVisitor),
       country,
+      ip,
     });
 
-    return NextResponse.json({ ok: true, country: country || null });
+    return NextResponse.json({ ok: true, country: country || null, ip: ip || null });
   } catch {
     return NextResponse.json({ error: "Kayıt başarısız" }, { status: 500 });
   }

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { collectAnalyticsAction } from "@/app/analytics/actions";
 
 const VISITOR_KEY = "ru_vid";
 const FIRST_KEY = "ru_vid_first";
@@ -18,25 +19,21 @@ function getVisitorId() {
   return id;
 }
 
-function send(payload: Record<string, unknown>) {
-  const body = JSON.stringify(payload);
-  if (navigator.sendBeacon) {
-    const blob = new Blob([body], { type: "application/json" });
-    navigator.sendBeacon("/api/analytics/collect", blob);
-    return;
-  }
-  void fetch("/api/analytics/collect", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body,
-    keepalive: true,
-  });
+function send(payload: {
+  visitorId: string;
+  path: string;
+  type: "view" | "entry" | "exit";
+  isNewVisitor?: boolean;
+}) {
+  // Prefer server action — /api/analytics/collect 404s under Passenger.
+  void collectAnalyticsAction(payload).catch(() => {});
 }
 
 export function VisitorTracker() {
   const pathname = usePathname();
   const entered = useRef(false);
   const lastPath = useRef<string | null>(null);
+  const exited = useRef(false);
 
   useEffect(() => {
     if (!pathname || pathname.startsWith("/admin")) return;
@@ -57,9 +54,10 @@ export function VisitorTracker() {
 
   useEffect(() => {
     const onLeave = () => {
-      if (!entered.current) return;
+      if (!entered.current || exited.current) return;
       const path = window.location.pathname;
       if (path.startsWith("/admin")) return;
+      exited.current = true;
       send({
         visitorId: getVisitorId(),
         path,

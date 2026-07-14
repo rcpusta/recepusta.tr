@@ -42,7 +42,26 @@ type AnalyticsSummary = {
   }>;
   topPaths: Array<{ path: string; views: number }>;
   countries: Array<{ code: string; name: string; count: number; lat: number; lng: number }>;
-  recent: Array<{ id: string; path: string; type: string; ts: string; country?: string }>;
+  recent: Array<{
+    id: string;
+    path: string;
+    type: string;
+    ts: string;
+    country?: string;
+    countryName?: string;
+    ip?: string;
+    visitorId?: string;
+  }>;
+  visitors?: Array<{
+    visitorId: string;
+    ip: string;
+    country: string;
+    countryName: string;
+    path: string;
+    firstSeen: string;
+    lastSeen: string;
+    views: number;
+  }>;
 };
 
 type SystemMetrics = {
@@ -370,6 +389,13 @@ function Panel({
   );
 }
 
+type MetricsSample = {
+  ts: number;
+  cpu: number;
+  disk: number;
+  net: number;
+};
+
 type Props = {
   content: {
     posts: number;
@@ -379,25 +405,27 @@ type Props = {
   };
   initialAnalytics?: AnalyticsSummary | null;
   initialSystem?: SystemMetrics | null;
+  initialHistory?: MetricsSample[];
 };
 
-export function AdminDashboard({ content, initialAnalytics = null, initialSystem = null }: Props) {
+function historyLabels(samples: MetricsSample[]) {
+  return samples.map((s) =>
+    new Date(s.ts).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
+  );
+}
+
+export function AdminDashboard({
+  content,
+  initialAnalytics = null,
+  initialSystem = null,
+  initialHistory = [],
+}: Props) {
   const [analytics, setAnalytics] = useState<AnalyticsSummary | null>(initialAnalytics);
   const [system, setSystem] = useState<SystemMetrics | null>(initialSystem);
-  const [cpuHistory, setCpuHistory] = useState<number[]>(
-    initialSystem ? [initialSystem.cpu.percent] : []
-  );
-  const [diskHistory, setDiskHistory] = useState<number[]>(
-    initialSystem ? [initialSystem.disk.percent] : []
-  );
-  const [networkHistory, setNetworkHistory] = useState<number[]>(
-    initialSystem
-      ? [Math.max(0, initialSystem.network.rxPerSec + initialSystem.network.txPerSec)]
-      : []
-  );
+  const [history, setHistory] = useState<MetricsSample[]>(initialHistory);
   const [error, setError] = useState("");
   const [tick, setTick] = useState(0);
-  const hasDataRef = useRef(Boolean(initialAnalytics || initialSystem));
+  const hasDataRef = useRef(Boolean(initialAnalytics || initialSystem || initialHistory.length));
 
   useEffect(() => {
     let cancelled = false;
@@ -414,10 +442,9 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
         hasDataRef.current = true;
         setAnalytics(result.analytics as AnalyticsSummary);
         setSystem(result.system as SystemMetrics);
-        setCpuHistory((prev) => [...prev.slice(-39), result.system.cpu.percent]);
-        setDiskHistory((prev) => [...prev.slice(-39), result.system.disk.percent]);
-        const netTotal = Math.max(0, result.system.network.rxPerSec + result.system.network.txPerSec);
-        setNetworkHistory((prev) => [...prev.slice(-39), netTotal]);
+        if (Array.isArray(result.history)) {
+          setHistory(result.history as MetricsSample[]);
+        }
         setError("");
         setTick((t) => t + 1);
       } catch (err) {
@@ -434,6 +461,11 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
       window.clearInterval(id);
     };
   }, []);
+
+  const cpuHistory = history.map((s) => s.cpu);
+  const diskHistory = history.map((s) => s.disk);
+  const networkHistory = history.map((s) => s.net);
+  const labels = historyLabels(history);
 
   return (
     <div className="space-y-6">
@@ -595,15 +627,31 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
         </Panel>
       </div>
 
-      <Panel title="Geçmiş İstatistikler" icon={Activity} live>
+      <Panel title="Geçmiş İstatistikler (son 30 dk)" icon={Activity} live>
+        <p className="mb-3 text-[11px] text-white/35">
+          CPU, disk ve network örnekleri sunucuda saklanır; sayfa yenilense de son 30 dakika korunur.
+        </p>
         <div className="grid gap-4 lg:grid-cols-3">
-          <HistoryChart title="CPU geçmişi" values={cpuHistory} color="#22d3ee" unit="%" />
-          <HistoryChart title="Disk geçmişi" values={diskHistory} color="#fbbf24" unit="%" />
+          <HistoryChart
+            title="CPU geçmişi"
+            values={cpuHistory}
+            color="#22d3ee"
+            unit="%"
+            labels={labels}
+          />
+          <HistoryChart
+            title="Disk geçmişi"
+            values={diskHistory}
+            color="#fbbf24"
+            unit="%"
+            labels={labels}
+          />
           <HistoryChart
             title="Network kullanımı"
             values={networkHistory}
             color="#34d399"
             formatValue={(n) => formatRate(n)}
+            labels={labels}
           />
         </div>
       </Panel>
@@ -614,8 +662,8 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
             <VisitorsGlobe countries={analytics?.countries ?? []} className="h-full w-full" />
           </div>
           <p className="mt-3 text-[11px] text-white/35">
-            Ülke bilgisi CDN / edge header’larından alınır (Cloudflare, Vercel vb.). Yerel geliştirmede
-            genelde görünmez; canlı ortamda girişler kürede işaretlenir.
+            Ülke Cloudflare / edge header’larından, IP ise CF-Connecting-IP veya X-Forwarded-For
+            üzerinden alınır. Yeni ziyaretler “Son Ziyaretçiler” listesinde görünür.
           </p>
         </Panel>
 
@@ -662,31 +710,76 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title="Canlı Olaylar" icon={Radio} className="lg:col-span-2">
-          <ScrollArea className="max-h-72">
+        <Panel title="Son Ziyaretçiler" icon={Users} className="lg:col-span-2" live>
+          <ScrollArea className="max-h-80">
+            <div className="space-y-2">
+              {(analytics?.visitors ?? []).map((visitor) => (
+                <div
+                  key={visitor.visitorId}
+                  className="rounded-xl border border-white/5 bg-black/25 px-3 py-2.5"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm text-white/85">
+                        {visitor.countryName || "Bilinmiyor"}
+                        {visitor.country ? (
+                          <span className="ml-2 font-mono text-[10px] text-cyan-300/80">
+                            {visitor.country}
+                          </span>
+                        ) : null}
+                      </p>
+                      <p className="mt-0.5 font-mono text-[11px] text-emerald-300/90">
+                        {visitor.ip || "—"}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-mono text-[11px] text-white/55">{visitor.path}</p>
+                      <p className="font-mono text-[10px] text-white/35">
+                        {new Date(visitor.lastSeen).toLocaleString("tr-TR")} · {visitor.views} view
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              {!analytics?.visitors?.length ? (
+                <p className="text-sm text-white/35">
+                  Henüz ziyaretçi yok. Canlı trafikte ülke ve IP burada listelenir.
+                </p>
+              ) : null}
+            </div>
+          </ScrollArea>
+        </Panel>
+
+        <Panel title="Canlı Olaylar" icon={Radio}>
+          <ScrollArea className="max-h-80">
             <div className="space-y-2">
               {(analytics?.recent ?? []).map((event) => (
                 <div
                   key={event.id}
-                  className="grid grid-cols-[72px_1fr_auto] items-center gap-3 rounded-lg border border-white/5 bg-black/25 px-3 py-2 font-mono text-[11px]"
+                  className="rounded-lg border border-white/5 bg-black/25 px-3 py-2 font-mono text-[11px]"
                 >
-                  <span
-                    className={cn(
-                      "rounded px-1.5 py-0.5 text-center uppercase",
-                      event.type === "entry" && "bg-emerald-500/15 text-emerald-300",
-                      event.type === "exit" && "bg-amber-500/15 text-amber-200",
-                      event.type === "view" && "bg-cyan-500/15 text-cyan-200"
-                    )}
-                  >
-                    {event.type}
-                  </span>
-                  <span className="truncate text-white/70">
-                    {event.country ? (
-                      <span className="mr-2 text-cyan-300/80">{event.country}</span>
-                    ) : null}
-                    {event.path}
-                  </span>
-                  <span className="text-white/35">{new Date(event.ts).toLocaleTimeString("tr-TR")}</span>
+                  <div className="flex items-center justify-between gap-2">
+                    <span
+                      className={cn(
+                        "rounded px-1.5 py-0.5 text-center uppercase",
+                        event.type === "entry" && "bg-emerald-500/15 text-emerald-300",
+                        event.type === "exit" && "bg-amber-500/15 text-amber-200",
+                        event.type === "view" && "bg-cyan-500/15 text-cyan-200"
+                      )}
+                    >
+                      {event.type}
+                    </span>
+                    <span className="text-white/35">
+                      {new Date(event.ts).toLocaleTimeString("tr-TR")}
+                    </span>
+                  </div>
+                  <p className="mt-1.5 truncate text-white/70">{event.path}</p>
+                  <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-[10px] text-white/45">
+                    <span className="text-cyan-300/85">
+                      {event.countryName || event.country || "Ülke yok"}
+                    </span>
+                    <span className="text-emerald-300/85">{event.ip || "IP yok"}</span>
+                  </p>
                 </div>
               ))}
               {!analytics?.recent?.length ? (
@@ -695,9 +788,11 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
             </div>
           </ScrollArea>
         </Panel>
+      </div>
 
-        <Panel title="İçerik" icon={FileText}>
-          <div className="space-y-3">
+      <div className="grid gap-4 lg:grid-cols-3">
+        <Panel title="İçerik" icon={FileText} className="lg:col-span-3">
+          <div className="grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-white/8 bg-black/25 p-4">
               <div className="flex items-center gap-2 text-cyan-200">
                 <FileText size={14} />
@@ -726,12 +821,12 @@ export function AdminDashboard({ content, initialAnalytics = null, initialSystem
                 <Plus size={12} /> Yeni haber
               </Link>
             </div>
-            {system?.network.interfaces?.[0] ? (
-              <p className="px-1 font-mono text-[10px] text-white/30">
-                NET {system.network.interfaces[0].name} · {system.network.interfaces[0].address}
-              </p>
-            ) : null}
           </div>
+          {system?.network.interfaces?.[0] ? (
+            <p className="mt-3 px-1 font-mono text-[10px] text-white/30">
+              NET {system.network.interfaces[0].name} · {system.network.interfaces[0].address}
+            </p>
+          ) : null}
         </Panel>
       </div>
     </div>
