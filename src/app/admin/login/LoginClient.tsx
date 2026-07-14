@@ -63,7 +63,21 @@ export default function AdminLoginPage() {
             ssh root@admin — auth
           </div>
 
-          <Logo href="/" size="lg" />
+          <div className="relative mx-auto mt-2 flex w-fit items-center justify-center">
+            <div
+              className="pointer-events-none absolute inset-0 scale-125 rounded-full bg-cyan-400/25 blur-2xl"
+              aria-hidden
+            />
+            <div
+              className="relative"
+              style={{
+                filter:
+                  "drop-shadow(0 0 6px rgba(34,211,238,0.9)) drop-shadow(0 0 18px rgba(56,189,248,0.55)) drop-shadow(0 0 36px rgba(34,211,238,0.3))",
+              }}
+            >
+              <Logo href="/" size="lg" />
+            </div>
+          </div>
           <h1 className="mt-6 font-heading text-2xl font-medium">Admin girişi</h1>
           <p className="mt-2 font-mono text-sm text-white/45">
             root@admin:~# authenticate --cms
