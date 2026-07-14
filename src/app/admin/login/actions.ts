@@ -38,3 +38,15 @@ export async function adminLoginAction(password: string): Promise<AdminLoginResu
     return { ok: false, error: "Giriş şu an yapılamıyor. Lütfen tekrar deneyin." };
   }
 }
+
+export async function adminLogoutAction(): Promise<{ ok: true }> {
+  const jar = await cookies();
+  jar.set(ADMIN_COOKIE, "", {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 0,
+  });
+  return { ok: true };
+}

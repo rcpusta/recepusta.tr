@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { FileText, LogOut, Newspaper, LayoutDashboard, Activity, Ticket, Share2, KeyRound } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
+import { adminLogoutAction } from "@/app/admin/login/actions";
 
 const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
@@ -20,7 +21,11 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
 
   async function logout() {
-    await fetch("/api/admin/logout", { method: "POST" });
+    try {
+      await adminLogoutAction();
+    } catch {
+      // Cookie clear may still fail on network errors; still leave the panel UI.
+    }
     router.push("/admin/login");
     router.refresh();
   }
