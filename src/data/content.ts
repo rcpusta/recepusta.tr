@@ -226,6 +226,7 @@ export const navHrefs = [
   { href: "/", key: "home" as const },
   { href: "/about", key: "about" as const },
   { href: "/services", key: "services" as const },
+  { href: "/magaza", key: "store" as const },
   { href: "/projects", key: "projects" as const },
   { href: "/blog", key: "media" as const },
   { href: "/haberler", key: "news" as const },

@@ -10,16 +10,14 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { Logo } from "@/components/ui/Logo";
 import { useLanguage } from "@/i18n/LanguageProvider";
-import { useSiteSettings } from "@/components/site/SiteSettingsProvider";
 import { cn } from "@/lib/utils";
 
 export function Navbar() {
   const { t } = useLanguage();
-  const { settings } = useSiteSettings();
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const talkHref = settings.whatsappMessage || settings.whatsapp;
+  const accountHref = "/magaza/hesap";
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -96,14 +94,12 @@ export function Navbar() {
           <div className="relative z-10 hidden shrink-0 items-center gap-2 xl:flex">
             <ThemeToggle />
             <LanguageSwitcher />
-            <a
-              href={talkHref}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href={accountHref}
               className="inline-flex items-center rounded-full border border-[var(--accent)]/35 bg-gradient-to-b from-[var(--accent)]/12 to-[var(--accent)]/4 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.16em] text-[var(--nav-fg)] shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] transition hover:border-[var(--accent)]/55 2xl:px-5 2xl:text-[11px]"
             >
               {t.nav.letsTalk}
-            </a>
+            </Link>
           </div>
 
           <div className="relative z-10 col-start-3 flex shrink-0 items-center justify-end gap-2 xl:hidden">
@@ -154,18 +150,19 @@ export function Navbar() {
                   </Link>
                 </motion.div>
               ))}
-              <motion.a
-                href={talkHref}
-                target="_blank"
-                rel="noopener noreferrer"
+              <motion.div
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.04 * navHrefs.length }}
-                onClick={() => setOpen(false)}
-                className="mt-4 inline-flex items-center rounded-full border border-[var(--accent)]/40 px-8 py-3 text-xs uppercase tracking-[0.22em] text-foreground"
               >
-                {t.nav.letsTalk}
-              </motion.a>
+                <Link
+                  href={accountHref}
+                  onClick={() => setOpen(false)}
+                  className="mt-4 inline-flex items-center rounded-full border border-[var(--accent)]/40 px-8 py-3 text-xs uppercase tracking-[0.22em] text-foreground"
+                >
+                  {t.nav.letsTalk}
+                </Link>
+              </motion.div>
             </nav>
           </motion.div>
         )}

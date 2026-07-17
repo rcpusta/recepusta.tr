@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FileText, LogOut, Newspaper, LayoutDashboard, Activity, Ticket, Share2, KeyRound } from "lucide-react";
+import { FileText, LogOut, Newspaper, LayoutDashboard, Activity, Ticket, Share2, KeyRound, Server } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { cn } from "@/lib/utils";
 import { adminLogoutAction } from "@/app/admin/login/actions";
@@ -11,6 +11,7 @@ const links = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { href: "/admin/tickets", label: "Ticketlar", icon: Ticket },
   { href: "/admin/settings", label: "İletişim & Sosyal", icon: Share2 },
+  { href: "/admin/dchost", label: "DCHost Ayarları", icon: Server },
   { href: "/admin/password", label: "Şifre değiştir", icon: KeyRound },
   { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/news", label: "Haberler", icon: Newspaper },

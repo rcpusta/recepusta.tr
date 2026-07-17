@@ -41,6 +41,9 @@ yarn-error.log*
 # system metrics history (runtime, last 30m)
 /content/metrics-history.json
 
+# DCHost catalog credentials (runtime)
+/content/dchost-settings.json
+
 # vercel
 .vercel
 
