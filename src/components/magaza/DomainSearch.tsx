@@ -2,10 +2,11 @@
 
 import { FormEvent, useState, useTransition } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Check, Loader2, Search, X } from "lucide-react";
-import { lookupDomainsAction } from "@/app/magaza/actions";
+import { Check, Loader2, Search, UserRoundSearch, X } from "lucide-react";
+import { lookupDomainOwnerAction, lookupDomainsAction } from "@/app/magaza/actions";
 import type { DomainLookupResult } from "@/lib/dchost/domains";
 import { formatPrice } from "@/lib/dchost/format";
+import { formatOwnerDate, type DomainOwnerInfo } from "@/lib/rdap";
 import { magazaEase } from "@/components/magaza/MagazaAtmosphere";
 import { cn } from "@/lib/utils";
 
@@ -64,7 +65,8 @@ export function DomainSearch() {
             <span className="mz-kicker">Domain search</span>
             <h2 className="mz-title mt-4 text-2xl md:text-4xl">Alan adınızı hemen bulun</h2>
             <p className="mt-2 max-w-2xl text-sm text-[var(--mz-muted)] md:text-base">
-              Müsaitlik ve yıllık kayıt fiyatı anında. Uyumsuz sonuçlar önce listelenir.
+              Müsaitlik ve yıllık kayıt fiyatı anında. Kayıtlı domainlerde kime ait olduğunu
+              sorgulayabilirsiniz.
             </p>
 
             <form onSubmit={onSubmit} className="mt-7">
@@ -149,7 +151,7 @@ export function DomainSearch() {
                   </div>
 
                   {taken.length ? (
-                    <ResultTable title="Uyumsuz / kayıtlı" tone="warn" items={taken} />
+                    <ResultTable title="Uyumsuz / kayıtlı" tone="warn" items={taken} showOwner />
                   ) : null}
                   {available.length ? (
                     <ResultTable title="Uygun domainler" tone="ok" items={available} />
@@ -170,10 +172,12 @@ function ResultTable({
   title,
   tone,
   items,
+  showOwner,
 }: {
   title: string;
   tone: "ok" | "warn";
   items: DomainLookupResult[];
+  showOwner?: boolean;
 }) {
   return (
     <div>
@@ -187,43 +191,190 @@ function ResultTable({
       </h3>
       <div className="overflow-hidden rounded-xl border border-[var(--mz-border)]">
         {items.map((item, i) => (
-          <div
+          <DomainResultRow
             key={item.name}
+            item={item}
+            last={i === items.length - 1}
+            showOwner={showOwner && !item.available}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DomainResultRow({
+  item,
+  last,
+  showOwner,
+}: {
+  item: DomainLookupResult;
+  last?: boolean;
+  showOwner?: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  const [info, setInfo] = useState<DomainOwnerInfo | null>(null);
+  const [ownerError, setOwnerError] = useState("");
+  const [loading, startOwner] = useTransition();
+
+  function loadOwner() {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+    setOwnerError("");
+    setOpen(true);
+    if (info) return;
+    startOwner(async () => {
+      const result = await lookupDomainOwnerAction(item.name);
+      if (!result.ok) {
+        setOwnerError(result.error);
+        return;
+      }
+      setInfo(result.info);
+    });
+  }
+
+  return (
+    <div
+      className={cn(
+        "bg-[var(--mz-surface-2)]",
+        !last && "border-b border-[var(--mz-border)]"
+      )}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3.5">
+        <div className="flex min-w-0 items-center gap-3">
+          <span
             className={cn(
-              "flex flex-wrap items-center justify-between gap-3 bg-[var(--mz-surface-2)] px-4 py-3.5",
-              i < items.length - 1 && "border-b border-[var(--mz-border)]"
+              "inline-flex size-7 items-center justify-center rounded-full border",
+              item.available
+                ? "border-[color-mix(in_srgb,var(--mz-ok)_40%,transparent)] text-[var(--mz-ok)]"
+                : "border-[color-mix(in_srgb,var(--mz-warn)_40%,transparent)] text-[var(--mz-warn)]"
             )}
           >
-            <div className="flex min-w-0 items-center gap-3">
-              <span
-                className={cn(
-                  "inline-flex size-7 items-center justify-center rounded-full border",
-                  item.available
-                    ? "border-[color-mix(in_srgb,var(--mz-ok)_40%,transparent)] text-[var(--mz-ok)]"
-                    : "border-[color-mix(in_srgb,var(--mz-warn)_40%,transparent)] text-[var(--mz-warn)]"
-                )}
-              >
-                {item.available ? <Check size={13} /> : <X size={13} />}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate font-medium">{item.name}</p>
-                <p className="text-[11px] text-[var(--mz-faint)]">
-                  {item.available ? "Kayıt için uygun" : item.error || "Kayıtlı"}
-                  {item.premium ? " · Premium" : ""}
+            {item.available ? <Check size={13} /> : <X size={13} />}
+          </span>
+          <div className="min-w-0">
+            <p className="truncate font-medium">{item.name}</p>
+            <p className="text-[11px] text-[var(--mz-faint)]">
+              {item.available ? "Kayıt için uygun" : item.error || "Kayıtlı"}
+              {item.premium ? " · Premium" : ""}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {item.available && item.registerPrice != null ? (
+            <p className="font-mono text-sm font-semibold text-[var(--mz-price)]">
+              {formatPrice(item.registerPrice)}
+              <span className="ml-1 text-[10px] font-normal text-[var(--mz-faint)]">/ yıl</span>
+            </p>
+          ) : showOwner ? (
+            <button
+              type="button"
+              onClick={loadOwner}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--mz-border)] bg-[var(--mz-bg-elevated)] px-3 py-1.5 text-xs font-medium text-[var(--mz-text)] transition hover:border-[var(--mz-brand)] hover:text-[var(--mz-brand-2)]"
+            >
+              {loading ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <UserRoundSearch size={13} />
+              )}
+              {open ? "Gizle" : "Kayıtlı kim?"}
+            </button>
+          ) : (
+            <p className="text-xs text-[var(--mz-faint)]">—</p>
+          )}
+        </div>
+      </div>
+
+      <AnimatePresence>
+        {showOwner && open ? (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: magazaEase }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-[var(--mz-border)] bg-[var(--mz-bg-elevated)] px-4 py-4">
+              {loading && !info ? (
+                <p className="inline-flex items-center gap-2 text-sm text-[var(--mz-muted)]">
+                  <Loader2 size={14} className="animate-spin" />
+                  Kayıt bilgisi getiriliyor…
                 </p>
-              </div>
+              ) : null}
+
+              {ownerError ? (
+                <div className="space-y-2">
+                  <p className="text-sm text-[var(--mz-warn)]">{ownerError}</p>
+                  <a
+                    href={`https://who.is/whois/${encodeURIComponent(item.name)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex text-xs font-medium text-[var(--mz-brand-2)] hover:underline"
+                  >
+                    who.is üzerinde aç →
+                  </a>
+                </div>
+              ) : null}
+
+              {info ? <OwnerPanel info={info} /> : null}
             </div>
-            {item.available && item.registerPrice != null ? (
-              <p className="font-mono text-sm font-semibold text-[var(--mz-price)]">
-                {formatPrice(item.registerPrice)}
-                <span className="ml-1 text-[10px] font-normal text-[var(--mz-faint)]">/ yıl</span>
-              </p>
-            ) : (
-              <p className="text-xs text-[var(--mz-faint)]">—</p>
-            )}
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function OwnerPanel({ info }: { info: DomainOwnerInfo }) {
+  const owner =
+    info.registrant ||
+    info.organization ||
+    (info.privacy ? "Gizlilik koruması (redacted)" : "Bilgi yayınlanmamış");
+
+  const rows = [
+    { label: "Sahip / kayıtlı", value: owner },
+    { label: "Kuruluş", value: info.organization && info.organization !== info.registrant ? info.organization : null },
+    { label: "Registrar", value: info.registrar },
+    { label: "Kayıt tarihi", value: formatOwnerDate(info.created) },
+    { label: "Bitiş tarihi", value: formatOwnerDate(info.expires) },
+    {
+      label: "Nameserver",
+      value: info.nameservers.length ? info.nameservers.slice(0, 4).join(", ") : null,
+    },
+  ].filter((r) => r.value);
+
+  return (
+    <div className="space-y-3">
+      <div className="grid gap-2 sm:grid-cols-2">
+        {rows.map((row) => (
+          <div
+            key={row.label}
+            className="rounded-lg border border-[var(--mz-border)] bg-[var(--mz-surface)] px-3 py-2.5"
+          >
+            <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[var(--mz-faint)]">
+              {row.label}
+            </p>
+            <p className="mt-1 break-words text-sm text-[var(--mz-text)]">{row.value}</p>
           </div>
         ))}
       </div>
+      {info.privacy ? (
+        <p className="text-[11px] text-[var(--mz-faint)]">
+          Kişisel bilgiler WHOIS gizliliği nedeniyle gizlenmiş olabilir; registrar bilgisi genelde
+          görünür.
+        </p>
+      ) : null}
+      <a
+        href={`https://who.is/whois/${encodeURIComponent(info.domain)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex text-xs font-medium text-[var(--mz-brand-2)] hover:underline"
+      >
+        Detaylı WHOIS →
+      </a>
     </div>
   );
 }

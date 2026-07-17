@@ -12,6 +12,7 @@ import { invoicePaymentUrl } from "@/lib/dchost/config";
 import { placeOrder, listPaymentMethods } from "@/lib/dchost/orders";
 import { searchDomains } from "@/lib/dchost/domains";
 import type { DomainLookupResult } from "@/lib/dchost/domains";
+import { lookupDomainOwner, type DomainOwnerInfo } from "@/lib/rdap";
 import {
   clearCustomerSession,
   getCustomerAccessToken,
@@ -156,5 +157,19 @@ export async function lookupDomainsAction(
     return { ok: true, results };
   } catch (err) {
     return { ok: false, error: errMessage(err, "Domain sorgusu başarısız.") };
+  }
+}
+
+export async function lookupDomainOwnerAction(
+  domain: string
+): Promise<{ ok: true; info: DomainOwnerInfo } | { ok: false; error: string }> {
+  const value = domain?.trim() || "";
+  if (!value) return { ok: false, error: "Domain adı gerekli." };
+
+  try {
+    const info = await lookupDomainOwner(value);
+    return { ok: true, info };
+  } catch (err) {
+    return { ok: false, error: errMessage(err, "Kayıt bilgisi alınamadı.") };
   }
 }
